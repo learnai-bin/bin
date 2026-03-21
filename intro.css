@@ -397,7 +397,6 @@ span.sub-header{
   z-index: 1;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar) transparent;
-  overscroll-behavior-y: contain;
 }
 .scroll-body::-webkit-scrollbar { width: 4px; }
 .scroll-body::-webkit-scrollbar-track { background: transparent; }
