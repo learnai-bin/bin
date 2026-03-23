@@ -210,7 +210,7 @@
 }
 
 /* ── DRAWBACK HEADING ── */
-.drawback-title {
+.drawback-title, .feature-title {
   font-family: 'Lora', Georgia, serif;
   font-size: clamp(0.88rem, 1.8vw, 1rem);
   font-weight: 600;
@@ -223,7 +223,7 @@
   opacity: 0.92;
   transition: color 0.45s, border-color 0.45s;
 }
-[data-theme="light"] .drawback-title {
+[data-theme="light"] .drawback-title, [data-theme="light"] .feature-title {
   color: #dc2626;
   border-left-color: #dc2626;
   opacity: 1;
@@ -909,8 +909,8 @@
 
       </div>
       <div class="topic">
-        <h4>Features in DBMS &amp; RDBMS</h4>
-        <p>There are 2 main features:</p>
+        <h4 class="feature-title">Features</h4>
+        <p>There are 2 main features in both DBMS &amp; RDBMS,</p>
         <!-- ── FEATURES TREE ── -->
         <div class="org-scroll-wrap">
           <div class="org-wrap" id="orgWrap2">
