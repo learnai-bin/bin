@@ -7,10 +7,102 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="intro.css"/>
 <link rel="stylesheet" href="bin-logo.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 <style>
   html { scroll-behavior: auto; }
-  /* ── TAB ALIVE: shake once, then silent for 5s, repeat ── */
+  /* ── PAGE NAV BUTTONS ── */
+.page-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--text-body);
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1.5px solid var(--glass-border);
+  border-radius: 6px;
+  background: var(--glass-bg);
+  transition: border-color 0.28s, color 0.28s, background 0.28s,
+              padding 0.32s ease, gap 0.32s ease;
+  opacity: 0.7;
+  box-shadow: 0 2px 12px rgba(200,255,0,0.18), 0 1px 4px rgba(200,255,0,0.10);
+  overflow: hidden;
+  white-space: nowrap;
+}
+[data-theme="light"] .page-nav-btn {
+  box-shadow: 0 2px 10px rgba(29,78,216,0.18), 0 1px 4px rgba(29,78,216,0.10);
+}
+.page-nav-btn:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
+  background: var(--accent-soft);
+  opacity: 1;
+  padding: 6px 18px;
+  gap: 10px;
+}
+/* arrow always uses accent colour */
+.page-nav-btn svg {
+  flex-shrink: 0;
+  stroke: var(--accent);
+  transition: stroke 0.28s;
+}
+/* hover sub-text */
+.page-nav-btn .nav-hint {
+  font-size: 0.56rem;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity 0.28s ease, max-width 0.32s ease;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+.page-nav-btn:hover .nav-hint {
+  opacity: 0.75;
+  max-width: 120px;
+}
+
+/* ── TOPIC ITEM ICON: inside div, left of text ── */
+.topic-item {
+  overflow: hidden;
+  padding-left: 0.25rem !important;
+  justify-content: flex-start !important;
+}
+.topic-item::before {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  background: none !important;
+  display: inline-block;
+  opacity: 0;
+  max-width: 0;
+  margin-right: 0;
+  transition: opacity 0.22s ease, max-width 0.22s ease, margin-right 0.22s ease;
+  font-size: 0.6rem;
+  vertical-align: middle;
+}
+.topic-item:hover::before {
+  opacity: 1;
+  max-width: 1rem;
+  margin-right: 4px;
+}
+.topic-head {
+  transition: transform 0.22s ease, color 0.25s;
+  display: inline-block;
+  width: auto !important;
+}
+.topic-item:hover .topic-head {
+  transform: translateX(3px);
+}
+
+/* ── TAB ALIVE: shake once, then silent for 5s, repeat ── */
 @keyframes tabShake {
   0%    { transform: rotate(0deg); }
   2%    { transform: rotate(-8deg) translateY(-2px); }
@@ -70,7 +162,7 @@
   border: 1.5px solid var(--accent-border);
   background: var(--accent-soft);
   color: var(--text-tag);
-  font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 0.72rem;
+  font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 0.60rem;
   box-shadow: 0 4px 16px rgba(200,255,0,0.08);
 }
 [data-theme="light"] .org-node.type-branch {
@@ -79,7 +171,7 @@
 
 /* LEAF — glass surface, muted text */
 .org-node.type-leaf {
-  border: 1px solid var(--glass-border);
+  border: 1.5px solid var(--glass-border);
   background: var(--glass-bg);
   color: var(--text-body);
   font-family: 'DM Mono', monospace; font-weight: 400; font-size: 0.63rem;
@@ -95,6 +187,290 @@
   font-family: 'DM Mono', monospace;
 }
 .org-node .node-label { line-height: 1.3; }
+
+/* ── YEAR HIGHLIGHT in Data section ── */
+.highlight-text {
+  color: #ff9f43;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+[data-theme="light"] .highlight-text {
+  color: #d4660a;
+}
+
+/* ── DRAWBACK HEADING ── */
+.drawback-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: clamp(0.88rem, 1.8vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #f87171;
+  border-left: 3px solid #f87171;
+  padding-left: 0.6rem;
+  margin-top: 1.2rem;
+  margin-bottom: 0.45rem;
+  opacity: 0.92;
+  transition: color 0.45s, border-color 0.45s;
+}
+[data-theme="light"] .drawback-title {
+  color: #dc2626;
+  border-left-color: #dc2626;
+  opacity: 1;
+}
+
+/* ══════════════════════════════════════════════════════
+   LAYOUT FIX — only .scroll-body scrolls on desktop/tab
+   ══════════════════════════════════════════════════════ */
+
+/* ── Desktop only (≥ 901 px) ── */
+@media (min-width: 901px) {
+  /* Lock the root so no outer scroll ever appears */
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Body becomes a column flex so nav + main stack properly */
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Nav takes its natural height; don't let it shrink */
+  nav { flex-shrink: 0; }
+
+  /* Main fills whatever height remains below nav */
+  #void {
+    flex: 1 1 0%;
+    min-height: 0;          /* critical: lets flex child shrink below content size */
+    overflow: hidden;
+    display: flex;          /* section + sidebar side-by-side */
+    flex-direction: row;
+  }
+
+  /* Content column: fills width, hides overflow so only scroll-body scrolls */
+  #section {
+    flex: 1 1 0%;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* THE only scrollable area on the page */
+  .scroll-body {
+    flex: 1 1 0%;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Custom thin scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(200,255,0,0.25) transparent;
+  }
+  .scroll-body::-webkit-scrollbar { width: 4px; }
+  .scroll-body::-webkit-scrollbar-track { background: transparent; }
+  .scroll-body::-webkit-scrollbar-thumb {
+    background: rgba(200,255,0,0.22);
+    border-radius: 4px;
+  }
+  [data-theme="light"] .scroll-body::-webkit-scrollbar-thumb {
+    background: rgba(29,78,216,0.22);
+  }
+
+  /* Sidebar: fixed, never scrolls itself — wheel is forwarded globally */
+  #sidebar {
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+}
+
+/* ── Mobile & Tablet (≤ 900 px) ── */
+@media (max-width: 900px) {
+  /* Let page scroll naturally */
+  html, body {
+    height: auto;
+    overflow: auto;
+    display: block;
+  }
+
+  /* Stack section vertically */
+  #void {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    height: auto;
+  }
+
+  #section {
+    order: 1;
+    overflow: visible;
+    height: auto;
+    display: block;
+  }
+
+  /* scroll-body is just a normal block — page itself scrolls */
+  .scroll-body {
+    overflow: visible;
+    height: auto;
+    flex: none;
+  }
+
+  /* Sidebar fully hidden — replaced by floating Topics toggle */
+  #sidebar {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   TOPICS TOGGLE — floating pill (mobile & tablet)
+   Mirrors the theme-toggle button style, left side
+═══════════════════════════════════════════════════ */
+#topic-toggle {
+  display: none; /* hidden on desktop */
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 200;
+}
+#topic-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 1.1rem 0.55rem 0.85rem;
+  border-radius: 50px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.18),
+    0 0 0 1px var(--accent-soft) inset;
+  transition: background 0.45s, border-color 0.45s, color 0.45s,
+              box-shadow 0.28s, transform 0.18s;
+  outline: none;
+}
+#topic-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.22),
+    0 0 0 1px var(--accent-border) inset;
+}
+#topic-toggle-btn:active { transform: translateY(0); }
+
+/* icon circle — same as .t-icon */
+.tp-icon {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.45s, transform 0.32s;
+  position: relative;
+}
+.tp-icon svg {
+  width: 13px; height: 13px;
+  stroke: var(--bg);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  position: absolute;
+  transition: opacity 0.28s, transform 0.28s;
+}
+/* list icon (default) */
+.tp-icon .icon-list  { opacity: 1; transform: scale(1); }
+/* X icon (when open) */
+.tp-icon .icon-close { opacity: 0; transform: rotate(-45deg) scale(0.6); }
+
+#topic-toggle-btn.open .tp-icon .icon-list  { opacity: 0; transform: rotate(45deg) scale(0.6); }
+#topic-toggle-btn.open .tp-icon .icon-close { opacity: 1; transform: rotate(0deg) scale(1); }
+#topic-toggle-btn.open .tp-icon { transform: rotate(90deg); }
+
+/* ── Topics slide-up panel ── */
+#topic-panel {
+  display: none; /* shown via JS */
+  position: fixed;
+  bottom: 5.8rem;   /* sits just above the toggle button */
+  left: 1.2rem;
+  z-index: 199;
+  min-width: 200px;
+  max-width: 260px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    0 0 0 1px var(--accent-soft) inset,
+    0 12px 48px rgba(0,0,0,0.55),
+    0 1px 0 var(--glass-shine) inset;
+  padding: 0.9rem 1rem 1rem;
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.26s ease, transform 0.26s ease;
+}
+#topic-panel.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+/* panel label row */
+.tp-panel-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* reuse .topics + .topic-item + .topic-head from existing styles */
+#topic-panel .topics {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+#topic-panel .topic-item {
+  padding: 0.38rem 0.2rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+#topic-panel .topic-item:last-child { border-bottom: none; }
+#topic-panel .topic-head {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-body);
+  text-decoration: none;
+  transition: color 0.2s, padding-left 0.18s;
+  display: block;
+}
+#topic-panel .topic-item:hover .topic-head {
+  color: var(--accent);
+  padding-left: 0.35rem;
+}
+
+/* show toggle button on mobile & tablet (≤ 900px) */
+@media (max-width: 900px) {
+  #topic-toggle { display: block; }
+  #topic-toggle { bottom: 1.4rem; left: 1.2rem; }
+}
+@media (max-width: 600px) {
+  #topic-toggle { bottom: 1.2rem; left: 1.2rem; }
+}
 </style>
 </head>
 <body>
@@ -184,7 +560,7 @@
     <div class="header">
       <div class="header-dot"></div>
       <h2>SQL<span><!--( Structured Query Language )--></span></h2>
-      <span>edition · v1.1</span>
+      <span>edition · 1.1</span>
     </div>
     <div class="scroll-body">
 
@@ -192,18 +568,20 @@
         <div class="topic-tag">Overview</div>
         <h3>What is SQL?</h3>
         <p style="text-indent:24px"><em class="highlight">S</em>tructured <em class="highlight">Q</em>uery <em class="highlight">L</em>anguage ( SQL )
-          is the standard programming language used to manage, manipulate and retrieve data stored in <em class="highlight">relational databases</em>. It allows you to communicate with databases using simple commands like <code>CREATE</code>, <code>RETRIVE</code>, <code>UPDATE</code> and <code>DELETE</code> to handle large amounts of data efficiently.</p>
-        <p>To understand SQL, we have to know about the basics terms like <em class="highlight"></em>data & database. Difference between DBMS and RDBMS. How they these are related to each other ?</p>
+          is the standard programming language used to manage, manipulate and retrieve data which is stored in <em class="highlight">relational databases</em>.
+          Precisely, SQL language is used for interacting with entities ( tables ) &amp; their attributes ( columns ) and tuples ( rows ) with data values in relational database
+          by using simple commands like <code>CREATE</code>, <code>SELECT</code>, <code>ALTER</code> and <code>DROP</code> to handle large amounts of data efficiently.</p>
+        <p>To understand SQL, we have to know about the basics terms like <em class="highlight"></em>Data Database, DBMS and RDBMS. How they these are related to each other ? What are the limitations and Features ?</p>
       </div>
 
       <div class="topic">
         <div class="topic-tag">path</div>
         <h3>Basics of SQL</h3>
         <div class="timeline">
-          <div class="tl-item"><a class="tl-head" href="#data">&nbsp;Data</a><span class="tl-text">It is a rawfact which describes <em>properties of an Object</em>.</span></div>
+          <div class="tl-item"><a class="tl-head" href="#data">&nbsp;Data</a><span class="tl-text">It is a rawfact which describes <em>properties</em> of an <em>Object</em>.</span></div>
           <div class="tl-item"><a class="tl-head" href="#database">&nbsp;Database</a><span class="tl-text">A place / medium which will store the data in <em>Systematic</em> & <em>Organized</em> Manner.</span></div>
           <div class="tl-item"><a class="tl-head" href="#dbms">&nbsp;DBMS</a><span class="tl-text">It is a Software which is used to maintain the DB ( data in <em>file format</em> ).</span></div>
-          <div class="tl-item"><a class="tl-head" href="#rdbms">&nbsp;RDBMS</a><span class="tl-text">Type of DBMS Software also used for DB ( but, data in <em>table format</em> )</span></div>
+          <div class="tl-item"><a class="tl-head" href="#rdbms">&nbsp;RDBMS</a><span class="tl-text">Type of DBMS Software, used for DB ( but, data in <em>table format</em> )</span></div>
         </div>
       </div>
 
@@ -212,7 +590,15 @@
         <h3>Data - core business assets</h3>
         <p style="text-indent:24px"><em class="highlight">Data</em> is the raw material of <em>information</em>, collected from various sources like words, images, symbols also from observations.</p>
         <p class="or">( or )</p>
-        <p style="text-indent: 24px;"><em class="highlight"></em>A collection of <em class="highlight">facts</em> in the form of words, numbers and even pictures.</p>
+        <p style="text-indent: 24px;">A collection of <em class="highlight">facts</em> in the form of words, numbers and even pictures.</p>
+        <p>Let's take an example,</p>
+        <h5 style="text-indent:24px">Evolution of programming languages :</h5>
+        <ul>
+            <li><span class="highlight-text">Low</span>-level programming ( <span class="highlight-text">1940s-1950s</span> ) uses <span class="highlight-text">ASCII</span> code (0s &amp; 1s), and we directly talk to <span class="highlight-text">hardware</span>.</li>
+            <li><span class="highlight-text">Mid</span>-level programming ( <span class="highlight-text">1950s-1960s</span> ) uses <span class="highlight-text">Assembly</span> language not closer to <span class="highlight-text">hardware but readable</span>.</li>
+            <li><span class="highlight-text">High</span>-level programming ( <span class="highlight-text">1960s-present</span> ) uses <span class="highlight-text">English-like</span> syntax, <span class="highlight-text">human readable</span> - easier coding and readability.</li>
+        </ul>
+        <p style="text-indent: 12px;">In the above example, the highlighted text represents data, which consists of facts expressed as words and numbers.</p>
       </div>
 
       <div class="topic" id="database">
@@ -221,21 +607,295 @@
         <p style="text-indent:24px"><em class="highlight">Database</em> is an <em>organized</em> collection of <em>structured data</em> stored electronically in a computer system &amp; managed by DBMS.</p>
         <p class="or">( or )</p>
         <p style="text-indent: 24px;">A <em class="highlight">repository</em> of data - A program that stores data.</p>
-        <p>A Database is more than just storage - It is a <em>structured</em>, <em>secure</em>, <em>scalable</em> system that <em class="highlight">transforms</em> raw data into usable information.</p>
+        <p>A Database is more than just storage - It is a <em>structured</em>, <em>secure</em>, <em>scalable</em> system that <em class="highlight">transforms</em> raw data into usable information.<br>
+          <em style="margin-left: 2em;">Structured</em> : Data is organized in a clear format, easy to store, manage and query.<br>
+          <em style="margin-left: 3.9em;">Secure</em> : Protects data from from unauthorised access by authentication and encryption.<br>
+          <em style="margin-left: 3.3em;">scalable</em> : Handle large amount of data. Data volume increases along with user demand without losing efficiency.<br>
+        </p>
+
+        <!-- ── DB DIAGRAM · DB LEFT · 3 FOLDERS RIGHT ── -->
+        <div style="margin:1.5rem 0 0.8rem;display:flex;justify-content:center;">
+          <svg viewBox="0 60 280 210"
+               xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+               style="width:100%;max-width:420px;height:auto;display:block;"
+               aria-label="Database on left connected to three folders on right: Records, Tables, Queries">
+
+            <!-- ─ 3 separate bent lines (folder → cluster near DB) ─ -->
+            <!-- Line 1 · Records → dot (90,120) -->
+            <path d="M196,95  C162,95  128,108 90,120"
+                  fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-opacity="0.55" stroke-linecap="round"/>
+            <!-- Line 2 · Tables → dot (90,140) -->
+            <path d="M196,157 C170,157 138,150 90,140"
+                  fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-opacity="0.55" stroke-linecap="round"/>
+            <!-- Line 3 · Queries → dot (90,160) -->
+            <path d="M196,218 C162,218 128,172 90,160"
+                  fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-opacity="0.55" stroke-linecap="round"/>
+
+
+            <!-- ─ Solid dots at DB side — spread vertically, close to DB ─ -->
+            <circle cx="90" cy="120" r="2.8" fill="#9ca3af" fill-opacity="0.65"/>
+            <circle cx="90" cy="140" r="2.8" fill="#9ca3af" fill-opacity="0.65"/>
+            <circle cx="90" cy="160" r="2.8" fill="#9ca3af" fill-opacity="0.65"/>
+
+            <!-- ─ Database image ─ -->
+            <image href="database.png" x="18" y="107" width="66" height="66"/>
+
+            <!-- ─ Folder 1 · Records · center (220,95) ─ -->
+            <g transform="translate(220,95) scale(0.35) translate(-60,-61)">
+              <rect x="10" y="28" width="100" height="66" rx="6" fill="#c45c0a"/>
+              <path d="M10 28 L10 18 Q10 13 15 13 L46 13 Q51 13 53 18 L57 28 Z" fill="#e0722a"/>
+              <g opacity="0.55"><rect x="24" y="36" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/></g>
+              <g opacity="0.75"><rect x="20" y="34" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/></g>
+              <rect x="16" y="32" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/>
+              <line x1="22" y1="44" x2="82" y2="44" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="52" x2="78" y2="52" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="60" x2="80" y2="60" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="68" x2="72" y2="68" stroke="#d4a870" stroke-width="0.7"/>
+              <rect x="10" y="28" width="100" height="66" rx="6" fill="#f08030"/>
+            </g>
+            <!-- <text x="220" y="115" text-anchor="middle"
+              font-family="DM Mono, monospace" font-size="7.5" fill="#9ca3af" letter-spacing="0.3">&nbsp;
+            </text> -->
+
+            <!-- ─ Folder 2 · Tables · center (220,157) ─ -->
+            <g transform="translate(220,157) scale(0.35) translate(-60,-61)">
+              <rect x="10" y="28" width="100" height="66" rx="6" fill="#c45c0a"/>
+              <path d="M10 28 L10 18 Q10 13 15 13 L46 13 Q51 13 53 18 L57 28 Z" fill="#e0722a"/>
+              <g opacity="0.55"><rect x="24" y="36" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/></g>
+              <g opacity="0.75"><rect x="20" y="34" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/></g>
+              <rect x="16" y="32" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/>
+              <line x1="22" y1="44" x2="82" y2="44" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="52" x2="78" y2="52" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="60" x2="80" y2="60" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="68" x2="72" y2="68" stroke="#d4a870" stroke-width="0.7"/>
+              <rect x="10" y="28" width="100" height="66" rx="6" fill="#f08030"/>
+            </g>
+            <!-- <text x="220" y="177" text-anchor="middle"
+              font-family="DM Mono, monospace" font-size="7.5" fill="#9ca3af" letter-spacing="0.3">&nbsp;
+            </text> -->
+
+            <!-- ─ Folder 3 · Queries · center (220,218) ─ -->
+            <g transform="translate(220,218) scale(0.35) translate(-60,-61)">
+              <rect x="10" y="28" width="100" height="66" rx="6" fill="#c45c0a"/>
+              <path d="M10 28 L10 18 Q10 13 15 13 L46 13 Q51 13 53 18 L57 28 Z" fill="#e0722a"/>
+              <g opacity="0.55"><rect x="24" y="36" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/></g>
+              <g opacity="0.75"><rect x="20" y="34" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/></g>
+              <rect x="16" y="32" width="72" height="52" rx="3" fill="#fff8f0" stroke="#e8c090" stroke-width="0.8"/>
+              <line x1="22" y1="44" x2="82" y2="44" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="52" x2="78" y2="52" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="60" x2="80" y2="60" stroke="#d4a870" stroke-width="0.7"/>
+              <line x1="22" y1="68" x2="72" y2="68" stroke="#d4a870" stroke-width="0.7"/>
+              <rect x="10" y="28" width="100" height="66" rx="6" fill="#f08030"/>
+            </g>
+            <!-- <text x="220" y="238" text-anchor="middle"
+              font-family="DM Mono, monospace" font-size="7.5" fill="#9ca3af" letter-spacing="0.3">&nbsp;
+            </text> -->
+
+          </svg>
+        </div>
+        <!-- ── END DB DIAGRAM ── -->
+
+        <p style="text-indent: 12px;">From the above image, the folders represent repositories that contain data in file format ( or ) tabular format, and these repositories are stored in the Database.</p>
       </div>
 
       <div class="topic" id="dbms">
         <div class="topic-tag">v1.1-dbms</div>
         <h3>DBMS - Manager</h3>
         <p style="text-indent:24px"><em>DataBase Management System</em> shortly as DBMS, which is used to <em class="highlight">maintain</em> the database, like a store manager who stocks shelves and helps you to find items easily &amp; rapidly.</p>
-        <p style="text-indent:24px">A software that manages data in a <em>structured</em> way, often using <em class="highlight">files</em> ( or ) <em class="highlight">hierarchical</em> models. To communicate with DBMS software, we use <em class="highlight">QL</em> ( Query Language ).</p>
+        <p style="text-indent:24px">A software that manages data in a <em>structured</em> way, often using <em class="highlight">files</em> ( or ) <em class="highlight">hierarchical</em> models. <br>
+          To communicate with DBMS software, we use <em class="highlight">QL</em> ( Query Language ).</p>
+
+        <!-- ── 3 FILE ICONS SIDE BY SIDE ── -->
+        <div style="display:flex;justify-content:center;gap:2rem;margin:1.8rem 0 0.6rem;flex-wrap:wrap;">
+
+          <!-- File 1 -->
+          <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg"
+               style="width:88px;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.28));">
+            <path d="M10 0 L62 0 L85 18 L85 110 L10 110 Z" fill="var(--glass-bg,#1a1a2e)" stroke="var(--accent-border,#c8ff00)" stroke-width="1.4"/>
+            <path d="M62 0 L62 18 L85 18 Z" fill="var(--accent-soft,rgba(200,255,0,0.12))" stroke="var(--accent-border,#c8ff00)" stroke-width="1.4"/>
+            <text x="18" y="42"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; Low</text>
+            <text x="18" y="57"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; 1940-1950</text>
+            <text x="18" y="72"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; ASCII</text>
+            <text x="18" y="87"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull;Hardware</text>
+          </svg>
+
+          <!-- File 2 -->
+          <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg"
+               style="width:88px;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.28));">
+            <path d="M10 0 L62 0 L85 18 L85 110 L10 110 Z" fill="var(--glass-bg,#1a1a2e)" stroke="var(--accent-border,#c8ff00)" stroke-width="1.4"/>
+            <path d="M62 0 L62 18 L85 18 Z" fill="var(--accent-soft,rgba(200,255,0,0.12))" stroke="var(--accent-border,#c8ff00)" stroke-width="1.4"/>
+            <text x="18" y="42"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; Mid</text>
+            <text x="18" y="57"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; 1950-1960</text>
+            <text x="18" y="72"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; Assembly</text>
+            <text x="18" y="87"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; Hardware</text>
+          </svg>
+
+          <!-- File 3 -->
+          <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg"
+               style="width:88px;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.28));">
+            <path d="M10 0 L62 0 L85 18 L85 110 L10 110 Z" fill="var(--glass-bg,#1a1a2e)" stroke="var(--accent-border,#c8ff00)" stroke-width="1.4"/>
+            <path d="M62 0 L62 18 L85 18 Z" fill="var(--accent-soft,rgba(200,255,0,0.12))" stroke="var(--accent-border,#c8ff00)" stroke-width="1.4"/>
+            <text x="18" y="42"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; High</text>
+            <text x="18" y="57"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; 1960-now</text>
+            <text x="18" y="72"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; English</text>
+            <text x="18" y="87"  font-family="DM Mono,monospace" font-size="9.5" fill="var(--text-body,#ccc)" opacity="0.85">&bull; Software</text>
+          </svg>
+
+        </div>
+        <!-- ── END FILE ICONS ── -->
+
+        <h4 class="drawback-title">Drawback</h4>
+        <p style="text-indent: 12px;">Stores data in file format, meaning each file is dedicated to specific topic, so unused space in those files cannot be utilized for other topics. This leads to wasted storage and can slow down overall database performance.</p>
       </div>
       <div class="topic" id="rdbms">
         <div class="topic-tag">v1.1-rdbms</div>
         <h3>RDBMS - Organised Layout</h3>
         <p style="text-indent:24px"><em>Relational Database Management System</em>, a type of DBMS that organises data in <em class="highlight">tables</em> ( <em class="highlight">relations</em> ) with rows and columns. It enforces relationships using <em>primary keys</em> &amp; <em>foreign keys</em>.</p>
-        <p style="text-indent:12px">-> To communicate with RDBMS, we use <em class="highlight">SQL</em> ( Structured Query Language ).</p>
-        <p style="text-indent:24px">The main reason to introduce the RDBMS is, to overcome the <em>storage</em> issues associated with earlier database systems. By providing a structured approach to data management, RDBMS ensures data integrity, reduces redundancy and facilitates efficient querying and updating of information.</p>
+        <p style="text-indent:12px">To communicate with RDBMS, we use <em class="highlight">SQL</em> ( Structured Query Language ).</p>
+        <p style="text-indent:12px">The main reason to introduce the RDBMS is, to overcome the <em>storage</em> issues associated with earlier database systems. So, RDBMS ensures data integrity, reduces redundancy and enables efficient querying and updating of data.<br>
+          <em style="margin-left: 4.9em;">Data integrity</em> : Uniqueness of data.<br>
+          <em style="margin-left: 2em;">Reduces redundancy</em> : Minimise the repetation of data, by splitting into more tables.<br>
+        </p>
+
+        <!-- ── TABLES + SVG CONNECTOR WRAPPER ── -->
+        <div style="position:relative; display:flex; justify-content:center; width:100%;">
+
+          <!-- SVG line drawn over the tables -->
+          <svg id="tbl-connector" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:10;"></svg>
+
+          <div class="rdbms-tables-wrap" style="position:relative;">
+
+            <!-- Table 2 · small (2 cols) · LEFT -->
+            <div class="rdbms-table-block" style="margin-top:2.4rem;">
+              <div class="tbl-title" style="text-align:center;">Table 2</div>
+              <div style="overflow-x:auto;">
+                <table class="rdbms-tbl" id="rdbms-t2">
+                  <thead>
+                    <tr>
+                      <th class="pk" id="t2-id-header">ID</th>
+                      <th>details</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="pk">1</td>
+                      <td>directly talk to Hardware</td>
+                    </tr>
+                    <tr>
+                      <td class="pk">2</td>
+                      <td>Hardware but readable</td>
+                    </tr>
+                    <tr>
+                      <td class="pk">3</td>
+                      <td>Human readable</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Table 1 · big (4 cols) · RIGHT -->
+            <div class="rdbms-table-block">
+              <div class="tbl-title" style="text-align:center;">Table 1</div>
+              <div style="overflow-x:auto;">
+                <table class="rdbms-tbl" id="rdbms-t1">
+                  <thead>
+                    <tr>
+                      <th class="pk" id="t1-id-header">ID</th>
+                      <th>level</th>
+                      <th>timeline</th>
+                      <th>program</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="pk">1</td>
+                      <td>Low</td>
+                      <td>1940-1950</td>
+                      <td>ASCII</td>
+                    </tr>
+                    <tr>
+                      <td class="pk">2</td>
+                      <td>Mid</td>
+                      <td>1950-1960</td>
+                      <td>Assembly</td>
+                    </tr>
+                    <tr>
+                      <td class="pk">3</td>
+                      <td>High</td>
+                      <td>1960-now</td>
+                      <td>English-like syntax</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- ── END RDBMS TABLES ── -->
+        <p style="text-indent: 12px;">
+          From the above tables, only two tables contain all data about the evolution of programming languages. The connecting lines indicate relationships between the tables, enforced through keys.
+          If we need to extend it in the future, we can simply add a new row.
+        </p>
+        <script>
+        (function() {
+          function drawTableConnector() {
+            const svg  = document.getElementById('tbl-connector');
+            const t2h  = document.getElementById('t2-id-header'); // LEFT table ID header
+            const t1h  = document.getElementById('t1-id-header'); // RIGHT table ID header
+            if (!svg || !t2h || !t1h) return;
+
+            svg.querySelectorAll('path, circle').forEach(e => e.remove());
+
+            const svgRect = svg.getBoundingClientRect();
+            const rL = t2h.getBoundingClientRect(); // left (lower) table ID header
+            const rR = t1h.getBoundingClientRect(); // right (upper) table ID header
+
+            // Dot 1: LEFT edge, mid-height of Table 1 (right/upper) ID header
+            const x1 = rR.left - svgRect.left;
+            const y1 = rR.top + rR.height / 2 - svgRect.top;
+
+            // Dot 2: TOP edge, centre-width of Table 2 (left/lower) ID header
+            const x2 = rL.left + rL.width / 2 - svgRect.left;
+            const y2 = rL.top - svgRect.top;
+
+            // Elbow: left from T1 → go left past T2 → go down → enter top of T2
+            // L-shape: straight left from T1 left edge → straight down into T2 top centre
+            // xCorner stays at x2 so it's a clean right-angle outside the tables
+            const gap = 8;
+            const xCorner = x2;
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', `M${x1},${y1} L${xCorner},${y1} L${xCorner},${y2}`);
+            path.setAttribute('stroke', 'var(--accent-border, #c8ff00)');
+            path.setAttribute('stroke-width', '3');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-linejoin', 'round');
+            path.setAttribute('opacity', '0.8');
+            svg.appendChild(path);
+
+            // dot terminals — T1: left edge mid, T2: top centre
+            function addDot(cx, cy) {
+              const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+              c.setAttribute('cx', cx);
+              c.setAttribute('cy', cy);
+              c.setAttribute('r', '4');
+              c.setAttribute('fill', 'var(--accent, #c8ff00)');
+              c.setAttribute('opacity', '0.9');
+              svg.appendChild(c);
+            }
+            addDot(x1, y1);   // left edge of Table 1 ID header
+            addDot(x2, y2);   // top centre of Table 2 ID header
+          }
+
+          window.addEventListener('load', drawTableConnector);
+          window.addEventListener('resize', drawTableConnector);
+          new MutationObserver(drawTableConnector)
+            .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+          setTimeout(drawTableConnector, 300);
+        })();
+        </script>
+
       </div>
       <div class="topic">
         <h4>Features in DBMS &amp; RDBMS</h4>
@@ -251,6 +911,21 @@
         <p style="text-indent:12px"><em>Authorisation</em> : Give access to specific users based on their roles with permissions.</p>
       </div>
 
+      <!-- ── PAGE NAV ── -->
+      <div style="display:flex; justify-content:flex-end; align-items:center; padding: 1.4rem 1rem 1.8rem;">
+
+        <!-- Next -->
+        <a href="#" class="page-nav-btn" id="nav-next">
+          <span class="nav-hint">(  Datatypes )</span>
+          <span>Next</span>
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
+            <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+
+      </div>
+      <!-- ── END PAGE NAV ── -->
+
     </div>
   </div>
 
@@ -258,6 +933,7 @@
   <aside id="sidebar">
 
     <!-- Social Links -->
+    <!--
     <div class="sb-section">
       <div class="sb-label">Connect</div>
       <a class="sb-link" href="https://www.instagram.com/iacc.bin/" target="_blank" rel="noopener">
@@ -274,7 +950,7 @@
         <span class="sb-name">YouTube</span>
         <span class="sb-arrow">↗</span>
       </a>
-      <!-- <a class="sb-link" href="https://github.com/" target="_blank" rel="noopener">
+      <a class="sb-link" href="https://github.com/" target="_blank" rel="noopener">
         <span class="sb-icon">
           <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
         </span>
@@ -294,9 +970,57 @@
     <div class="sb-section">
       <div class="sb-label">Topics</div>
       <div class="sb-concepts">
-        <a class="sb-pill" href="https://sqlintro.html/" target="_blank" rel="noopener">
+        <span class="sb-pill">
           SQL <span class="sb-pill-tag">DB</span>
-        </a>
+        </span>
+        <div class="topics">
+          <div class="topic-item" onclick="location.href='sqlintro.html'" style="cursor:pointer;">
+            <a class="topic-head" href="sqlintro.html">Basics</a>
+          </div>
+          <div class="topic-item" onclick="location.href='sqldt.html'" style="cursor:pointer;">
+            <a class="topic-head" href="sqldt.html">Datatypes</a>
+          </div>
+          <div class="topic-item" onclick="location.href='sqlconst.html'" style="cursor:pointer;">
+            <a class="topic-head" href="sqlconst.html">Constraints</a>
+          </div>
+          <div class="topic-item" onclick="location.href='sqloperators.html'" style="cursor:pointer;">
+            <a class="topic-head" href="sqloperators.html">Operators</a>
+          </div>
+          <div class="topic-item" onclick="location.href='sqlfunctions.html'" style="cursor:pointer;">
+            <a class="topic-head" href="sqlfunctions.html">Functions</a>
+          </div>
+          <div class="topic-item" onclick="location.href='db.html'" style="cursor:pointer;">
+            <a class="topic-head" href="db.html">Database</a>
+          </div>
+          <div class="topic-item" onclick="location.href='ddl.html'" style="cursor:pointer;">
+            <a class="topic-head" href="ddl.html">DDL</a>
+          </div>
+          <div class="topic-item" onclick="location.href='dml.html'" style="cursor:pointer;">
+            <a class="topic-head" href="dml.html">DML</a>
+          </div>
+          <div class="topic-item" onclick="location.href='dql.html'" style="cursor:pointer;">
+            <a class="topic-head" href="dql.html">DQL</a>
+          </div>
+          <div class="topic-item" onclick="location.href='.html'" style="cursor:pointer;">
+            <a class="topic-head" href="subqueries.html">Sub Query</a>
+          </div>
+          <div class="topic-item" onclick="location.href='dql.html'" style="cursor:pointer;">
+            <a class="topic-head" href="joins.html">Joins</a>
+          </div>
+          <div class="topic-item" onclick="location.href='sqlsets.html'" style="cursor:pointer;">
+            <a class="topic-head" href="sqlsets.html">Set Operators</a>
+          </div>
+          <div class="topic-item" onclick="location.href='tcl.html'" style="cursor:pointer;">
+            <a class="topic-head" href="tcl.html">TCL</a>
+          </div>
+          <div class="topic-item" onclick="location.href='dcl.html'" style="cursor:pointer;">
+            <a class="topic-head" href="dcl.html">DCL</a>
+          </div>
+          <div class="topic-item" onclick="location.href='view_trig.html'" style="cursor:pointer;">
+            <a class="topic-head" href="view_trig.html">Views, Triggers</a>
+          </div>
+        </div>
+      </div>
         <!-- <a class="sb-pill" href="https://www.python.org/" target="_blank" rel="noopener">
           Python <span class="sb-pill-tag">Lang</span>
         </a>
@@ -330,6 +1054,82 @@
   </aside>
 
 </main>
+
+<!-- ══ TOPICS TOGGLE — mobile/tablet floating button ══ -->
+<div id="topic-toggle">
+
+  <!-- Slide-up topics panel -->
+  <div id="topic-panel" role="dialog" aria-label="Topics">
+    <div class="tp-panel-label">Topics</div>
+    <div class="topics">
+      <div class="topic-item" onclick="location.href='sqlintro.html'" style="cursor:pointer;">
+        <a class="topic-head" href="sqlintro.html">Basics</a>
+      </div>
+      <div class="topic-item" onclick="location.href='sqldt.html'" style="cursor:pointer;">
+        <a class="topic-head" href="sqldt.html">Datatypes</a>
+      </div>
+      <div class="topic-item" onclick="location.href='sqlconst.html'" style="cursor:pointer;">
+        <a class="topic-head" href="sqlconst.html">Constraints</a>
+      </div>
+      <div class="topic-item" onclick="location.href='sqloperators.html'" style="cursor:pointer;">
+        <a class="topic-head" href="sqloperators.html">Operators</a>
+      </div>
+      <div class="topic-item" onclick="location.href='sqlfunctions.html'" style="cursor:pointer;">
+        <a class="topic-head" href="sqlfunctions.html">Functions</a>
+      </div>
+      <div class="topic-item" onclick="location.href='db.html'" style="cursor:pointer;">
+        <a class="topic-head" href="db.html">Database</a>
+      </div>
+      <div class="topic-item" onclick="location.href='ddl.html'" style="cursor:pointer;">
+        <a class="topic-head" href="ddl.html">DDL</a>
+      </div>
+      <div class="topic-item" onclick="location.href='dml.html'" style="cursor:pointer;">
+        <a class="topic-head" href="dml.html">DML</a>
+      </div>
+      <div class="topic-item" onclick="location.href='dql.html'" style="cursor:pointer;">
+        <a class="topic-head" href="dql.html">DQL</a>
+      </div>
+      <div class="topic-item" onclick="location.href='subqueries.html'" style="cursor:pointer;">
+        <a class="topic-head" href="subqueries.html">Sub Query</a>
+      </div>
+      <div class="topic-item" onclick="location.href='joins.html'" style="cursor:pointer;">
+        <a class="topic-head" href="joins.html">Joins</a>
+      </div>
+      <div class="topic-item" onclick="location.href='sqlsets.html'" style="cursor:pointer;">
+        <a class="topic-head" href="sqlsets.html">Set Operators</a>
+      </div>
+      <div class="topic-item" onclick="location.href='tcl.html'" style="cursor:pointer;">
+        <a class="topic-head" href="tcl.html">TCL</a>
+      </div>
+      <div class="topic-item" onclick="location.href='dcl.html'" style="cursor:pointer;">
+        <a class="topic-head" href="dcl.html">DCL</a>
+      </div>
+      <div class="topic-item" onclick="location.href='view_trig.html'" style="cursor:pointer;">
+        <a class="topic-head" href="view_trig.html">Views, Triggers</a>
+      </div>
+    </div>
+  </div>
+
+  <button id="topic-toggle-btn" aria-label="Toggle topics panel" aria-expanded="false">
+    <span class="tp-icon">
+      <!-- List icon (default — panel closed) -->
+      <svg class="icon-list" viewBox="0 0 24 24">
+        <line x1="8" y1="6"  x2="21" y2="6"/>
+        <line x1="8" y1="12" x2="21" y2="12"/>
+        <line x1="8" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6"  x2="3.01" y2="6"/>
+        <line x1="3" y1="12" x2="3.01" y2="12"/>
+        <line x1="3" y1="18" x2="3.01" y2="18"/>
+      </svg>
+      <!-- X icon (panel open) -->
+      <svg class="icon-close" viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </span>
+    <span class="tp-label">Topics</span>
+  </button>
+</div>
 
 <!-- ══ THEME TOGGLE — single button ══ -->
 <div id="theme-toggle">
@@ -720,6 +1520,82 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     requestAnimationFrame(step);
   });
 });
+
+// ─── TOPICS TOGGLE (mobile / tablet) ─────────────────────────
+(function () {
+  const topicBtn   = document.getElementById('topic-toggle-btn');
+  const topicPanel = document.getElementById('topic-panel');
+  if (!topicBtn || !topicPanel) return;
+
+  function openTopics() {
+    topicPanel.style.display = 'block';
+    // Force reflow so transition plays
+    topicPanel.getBoundingClientRect();
+    topicPanel.classList.add('open');
+    topicBtn.classList.add('open');
+    topicBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeTopics() {
+    topicPanel.classList.remove('open');
+    topicBtn.classList.remove('open');
+    topicBtn.setAttribute('aria-expanded', 'false');
+    // Hide after transition finishes
+    topicPanel.addEventListener('transitionend', function hide() {
+      if (!topicPanel.classList.contains('open')) topicPanel.style.display = 'none';
+      topicPanel.removeEventListener('transitionend', hide);
+    });
+  }
+
+  topicBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    topicPanel.classList.contains('open') ? closeTopics() : openTopics();
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', function (e) {
+    if (!topicPanel.contains(e.target) && e.target !== topicBtn) {
+      if (topicPanel.classList.contains('open')) closeTopics();
+    }
+  });
+})();
+
+// Any wheel / touch anywhere on the page (except inside <nav>)
+// is captured and forwarded to the content scroll container.
+(function () {
+  const navEl     = document.querySelector('nav');
+  const scrollBox = document.querySelector('.scroll-body');
+  if (!scrollBox) return;
+
+  function isDesktop() { return window.innerWidth > 768; }
+
+  /* ── Wheel (mouse & trackpad) ── */
+  document.addEventListener('wheel', function (e) {
+    if (!isDesktop()) return;
+    // Allow normal scroll inside the scroll-body itself
+    if (scrollBox.contains(e.target)) return;
+    // Don't hijack nav interactions
+    if (navEl && navEl.contains(e.target)) return;
+    e.preventDefault();
+    scrollBox.scrollTop += e.deltaY;
+  }, { passive: false });
+
+  /* ── Touch (tablet / touch-screen desktop) ── */
+  let _ty = 0;
+  document.addEventListener('touchstart', function (e) {
+    _ty = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function (e) {
+    if (!isDesktop()) return;
+    if (scrollBox.contains(e.target)) return;
+    if (navEl && navEl.contains(e.target)) return;
+    const dy = _ty - e.touches[0].clientY;
+    _ty = e.touches[0].clientY;
+    scrollBox.scrollTop += dy;
+    e.preventDefault();
+  }, { passive: false });
+})();
 </script>
 </body>
 </html>
