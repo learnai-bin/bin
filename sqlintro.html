@@ -105,11 +105,8 @@
 /* ── RDBMS TABLES: stack vertically on mobile/tablet ── */
 @media (max-width: 700px) {
   .rdbms-tables-wrap {
-    flex-direction: column !important;
     align-items: center !important;
-    gap: 1.6rem !important;
   }
-  /* Remove the desktop vertical-offset on Table 2 */
   .rdbms-tables-wrap .rdbms-table-block {
     margin-top: 0 !important;
   }
@@ -776,38 +773,9 @@
           <!-- SVG line drawn over the tables -->
           <svg id="tbl-connector" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:10;"></svg>
 
-          <div class="rdbms-tables-wrap" style="position:relative;">
+          <div class="rdbms-tables-wrap" style="position:relative; flex-direction:column; align-items:flex-start; padding-left:28px;">
 
-            <!-- Table 2 · small (2 cols) · LEFT -->
-            <div class="rdbms-table-block" style="margin-top:2.4rem;">
-              <div class="tbl-title" style="text-align:center;">Table 2</div>
-              <div style="overflow-x:auto;">
-                <table class="rdbms-tbl" id="rdbms-t2">
-                  <thead>
-                    <tr>
-                      <th class="pk" id="t2-id-header">ID</th>
-                      <th>details</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="pk">1</td>
-                      <td>directly talk to Hardware</td>
-                    </tr>
-                    <tr>
-                      <td class="pk">2</td>
-                      <td>Hardware but readable</td>
-                    </tr>
-                    <tr>
-                      <td class="pk">3</td>
-                      <td>Human readable</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Table 1 · big (4 cols) · RIGHT -->
+            <!-- Table 1 · big (4 cols) · TOP -->
             <div class="rdbms-table-block">
               <div class="tbl-title" style="text-align:center;">Table 1</div>
               <div style="overflow-x:auto;">
@@ -844,6 +812,35 @@
               </div>
             </div>
 
+            <!-- Table 2 · small (2 cols) · BOTTOM -->
+            <div class="rdbms-table-block">
+              <div class="tbl-title" style="text-align:center;">Table 2</div>
+              <div style="overflow-x:auto;">
+                <table class="rdbms-tbl" id="rdbms-t2">
+                  <thead>
+                    <tr>
+                      <th class="pk" id="t2-id-header">ID</th>
+                      <th>details</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="pk">1</td>
+                      <td>directly talk to Hardware</td>
+                    </tr>
+                    <tr>
+                      <td class="pk">2</td>
+                      <td>Hardware but readable</td>
+                    </tr>
+                    <tr>
+                      <td class="pk">3</td>
+                      <td>Human readable</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         </div>
         <!-- ── END RDBMS TABLES ── -->
@@ -855,67 +852,51 @@
         (function() {
           function drawTableConnector() {
             const svg = document.getElementById('tbl-connector');
-            const t2h = document.getElementById('t2-id-header'); // Table 2 ID header
-            const t1h = document.getElementById('t1-id-header'); // Table 1 ID header
-            if (!svg || !t2h || !t1h) return;
+            const t1h = document.getElementById('t1-id-header'); // Table 1 (top)
+            const t2h = document.getElementById('t2-id-header'); // Table 2 (bottom)
+            if (!svg || !t1h || !t2h) return;
 
             svg.querySelectorAll('path, circle').forEach(e => e.remove());
 
             const svgRect = svg.getBoundingClientRect();
-            const rL = t2h.getBoundingClientRect(); // Table 2
-            const rR = t1h.getBoundingClientRect(); // Table 1
+            const r1 = t1h.getBoundingClientRect(); // Table 1 ID header (top)
+            const r2 = t2h.getBoundingClientRect(); // Table 2 ID header (bottom)
 
-            // Detect layout: if the two ID headers are within 80px vertically → side-by-side (row)
-            // Otherwise tables are stacked vertically (column / mobile)
-            const isRow = Math.abs(rL.top - rR.top) < 80;
+            // Start: left border of T1 ID, vertically centred
+            const x1 = r1.left - svgRect.left;
+            const y1 = r1.top  + r1.height / 2 - svgRect.top;
 
-            let x1, y1, x2, y2, d;
+            // End: left border of T2 ID, vertically centred
+            const x2 = r2.left - svgRect.left;
+            const y2 = r2.top  + r2.height / 2 - svgRect.top;
 
-            if (isRow) {
-              // ── Desktop: Table 2 LEFT, Table 1 RIGHT ──
-              // Connect: left edge mid of T1 → top centre of T2 (L-shape)
-              x1 = rR.left - svgRect.left;
-              y1 = rR.top  + rR.height / 2 - svgRect.top;
-              x2 = rL.left + rL.width  / 2 - svgRect.left;
-              y2 = rL.top  - svgRect.top;
-              d  = `M${x1},${y1} L${x2},${y1} L${x2},${y2}`;
-            } else {
-              // ── Mobile/tablet: tables stacked vertically ──
-              // Whichever table is higher in the page is "top", the other is "bottom"
-              const topR  = rL.top < rR.top ? rL : rR; // topmost table's ID header
-              const botR  = rL.top < rR.top ? rR : rL; // bottom table's ID header
-              // Connect: bottom-centre of top table ID → top-centre of bottom table ID
-              x1 = topR.left + topR.width  / 2 - svgRect.left;
-              y1 = topR.bottom - svgRect.top;
-              x2 = botR.left  + botR.width  / 2 - svgRect.left;
-              y2 = botR.top   - svgRect.top;
-              if (Math.abs(x1 - x2) < 4) {
-                // Perfectly aligned — straight vertical line
-                d = `M${x1},${y1} L${x2},${y2}`;
-              } else {
-                // Slight offset — draw a centred elbow
-                const midY = (y1 + y2) / 2;
-                d = `M${x1},${y1} L${x1},${midY} L${x2},${midY} L${x2},${y2}`;
-              }
-            }
+            // How far left the bracket extends outside the tables
+            const bracket = 18;
+            const xLeft   = Math.min(x1, x2) - bracket;
+
+            // Rectangular path: right → left → down → right
+            // M(x1,y1) → go left to xLeft → go down to y2 → go right to x2
+            const d = `M${x1},${y1} L${xLeft},${y1} L${xLeft},${y2} L${x2},${y2}`;
 
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', d);
             path.setAttribute('stroke', 'var(--accent-border, #c8ff00)');
-            path.setAttribute('stroke-width', '3');
+            path.setAttribute('stroke-width', '2.5');
             path.setAttribute('fill', 'none');
             path.setAttribute('stroke-linejoin', 'round');
-            path.setAttribute('opacity', '0.8');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('opacity', '0.85');
             svg.appendChild(path);
 
+            // Dot terminals at both ends
             function addDot(cx, cy) {
               const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-              c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', '4');
+              c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', '3.5');
               c.setAttribute('fill', 'var(--accent, #c8ff00)'); c.setAttribute('opacity', '0.9');
               svg.appendChild(c);
             }
-            addDot(x1, y1);
-            addDot(x2, y2);
+            addDot(x1, y1); // left border of T1 ID
+            addDot(x2, y2); // left border of T2 ID
           }
 
           window.addEventListener('load', drawTableConnector);
