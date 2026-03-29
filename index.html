@@ -24,10 +24,14 @@
     overflow: visible !important;
   }
 
-  /* 1. Nav hover + active */
+  /* 1. Nav hover — white */
   .nav-links a:hover,
+  .nav-mobile a:hover {
+    color: #ffffff !important;
+  }
+
+  /* 1b. Nav active — blue */
   .nav-links a.active,
-  .nav-mobile a:hover,
   .nav-mobile a.active {
     color: #00d4ff !important;
   }
@@ -42,7 +46,6 @@
     color: #00d4ff !important;
   }
 
-  /* 4. Section labels — What's NEW & My Exploration Stuff */
   .section-label {
     color: #00d4ff !important;
   }
@@ -51,6 +54,109 @@
   .scroll-dot {
     background: #00d4ff !important;
     box-shadow: 0 0 8px 3px #00d4ff !important;
+  }
+
+
+
+  /* ── Axioms hidden until after hero ── */
+  .axioms-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+  .axioms-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── Hero chrome smooth fade ── */
+  .hero-chrome-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1),
+                transform 0.9s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+    z-index: 2;
+  }
+  .hero-chrome-wrap.fade-out {
+    opacity: 0;
+    transform: translateY(-18px);
+    pointer-events: none;
+  }
+
+  /* ── Brain X Neurons phrase ── */
+  .bin-phrase {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1em;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: #e0e0e0;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-align: center;
+    opacity: 0;
+    z-index: 3;
+    transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1),
+                transform 0.9s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+  .bin-phrase.phrase-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .bin-static {
+    color: #ffffff;
+  }
+  .bin-word-wrap {
+    display: block;
+    overflow: hidden;
+    height: 1.25em;
+    position: relative;
+  }
+  .bin-word {
+    display: block;
+    color: #00d4ff;
+    position: relative;
+    animation: none;
+  }
+  .bin-word.slide-out-up {
+    animation: slideOutUp 0.35s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+  .bin-word.slide-in-down {
+    animation: slideInDown 0.35s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+  .bin-word.slide-out-down {
+    animation: slideOutDown 0.35s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+  .bin-word.slide-in-up {
+    animation: slideInUp 0.35s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+  @keyframes slideOutUp {
+    from { transform: translateY(0);      opacity: 1; }
+    to   { transform: translateY(-110%);  opacity: 0; }
+  }
+  @keyframes slideInDown {
+    from { transform: translateY(110%);   opacity: 0; }
+    to   { transform: translateY(0);      opacity: 1; }
+  }
+  @keyframes slideOutDown {
+    from { transform: translateY(0);      opacity: 1; }
+    to   { transform: translateY(110%);   opacity: 0; }
+  }
+  @keyframes slideInUp {
+    from { transform: translateY(-110%);  opacity: 0; }
+    to   { transform: translateY(0);      opacity: 1; }
   }
 </style>
 </head>
@@ -75,25 +181,82 @@
     <div class="sl-line"></div>
   </div>
   <!-- Folder SVG -->
-  <svg class="folder-svg" viewBox="0 0 120 100">
+  <svg class="folder-svg" id="folderSvg" viewBox="0 0 120 100">
     <defs>
-      <!-- Vibrant: electric blue → deep purple → hot pink → orange -->
-      <linearGradient id="paintBack" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%"   stop-color="#3a6ff7"/>
-        <stop offset="40%"  stop-color="#6b30d6"/>
-        <stop offset="70%"  stop-color="#ff3cac"/>
-        <stop offset="100%" stop-color="#ff6b1a"/>
+      <!-- Color 1: Cyan #00d4ff -->
+      <linearGradient id="paintBack1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#00d4ff"/>
+        <stop offset="40%"  stop-color="#0090cc"/>
+        <stop offset="70%"  stop-color="#00d4ff"/>
+        <stop offset="100%" stop-color="#005f8a"/>
       </linearGradient>
-      <linearGradient id="paintTab" x1="0%" y1="100%" x2="100%" y2="0%">
-        <stop offset="0%"   stop-color="#ff3cac"/>
-        <stop offset="50%"  stop-color="#ff6b1a"/>
-        <stop offset="100%" stop-color="#3a6ff7"/>
+      <linearGradient id="paintTab1" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%"   stop-color="#005f8a"/>
+        <stop offset="50%"  stop-color="#00b8e0"/>
+        <stop offset="100%" stop-color="#00d4ff"/>
       </linearGradient>
-      <linearGradient id="paintFront" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%"   stop-color="#3a6ff7"/>
-        <stop offset="35%"  stop-color="#6b30d6"/>
-        <stop offset="65%"  stop-color="#ff3cac"/>
-        <stop offset="100%" stop-color="#ff6b1a"/>
+      <linearGradient id="paintFront1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#00d4ff"/>
+        <stop offset="35%"  stop-color="#0090cc"/>
+        <stop offset="65%"  stop-color="#00d4ff"/>
+        <stop offset="100%" stop-color="#005f8a"/>
+      </linearGradient>
+
+      <!-- Color 2: Purple #7c3aed -->
+      <linearGradient id="paintBack2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#7c3aed"/>
+        <stop offset="40%"  stop-color="#4a1fa8"/>
+        <stop offset="70%"  stop-color="#9b5cf6"/>
+        <stop offset="100%" stop-color="#3b0f80"/>
+      </linearGradient>
+      <linearGradient id="paintTab2" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%"   stop-color="#3b0f80"/>
+        <stop offset="50%"  stop-color="#6b30d6"/>
+        <stop offset="100%" stop-color="#7c3aed"/>
+      </linearGradient>
+      <linearGradient id="paintFront2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#7c3aed"/>
+        <stop offset="35%"  stop-color="#4a1fa8"/>
+        <stop offset="65%"  stop-color="#9b5cf6"/>
+        <stop offset="100%" stop-color="#3b0f80"/>
+      </linearGradient>
+
+      <!-- Color 3: Amber #f59e0b -->
+      <linearGradient id="paintBack3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#f59e0b"/>
+        <stop offset="40%"  stop-color="#b36e00"/>
+        <stop offset="70%"  stop-color="#fbbf24"/>
+        <stop offset="100%" stop-color="#92400e"/>
+      </linearGradient>
+      <linearGradient id="paintTab3" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%"   stop-color="#92400e"/>
+        <stop offset="50%"  stop-color="#d97706"/>
+        <stop offset="100%" stop-color="#f59e0b"/>
+      </linearGradient>
+      <linearGradient id="paintFront3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#f59e0b"/>
+        <stop offset="35%"  stop-color="#b36e00"/>
+        <stop offset="65%"  stop-color="#fbbf24"/>
+        <stop offset="100%" stop-color="#92400e"/>
+      </linearGradient>
+
+      <!-- Color 4: Lime #c8ff00 -->
+      <linearGradient id="paintBack4" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#c8ff00"/>
+        <stop offset="40%"  stop-color="#8aaa00"/>
+        <stop offset="70%"  stop-color="#d4ff33"/>
+        <stop offset="100%" stop-color="#556600"/>
+      </linearGradient>
+      <linearGradient id="paintTab4" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%"   stop-color="#556600"/>
+        <stop offset="50%"  stop-color="#a8d400"/>
+        <stop offset="100%" stop-color="#c8ff00"/>
+      </linearGradient>
+      <linearGradient id="paintFront4" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#c8ff00"/>
+        <stop offset="35%"  stop-color="#8aaa00"/>
+        <stop offset="65%"  stop-color="#d4ff33"/>
+        <stop offset="100%" stop-color="#556600"/>
       </linearGradient>
     </defs>
     <rect class="folder-back" x="10" y="28" width="100" height="66" rx="6"/>
@@ -129,32 +292,79 @@
 
   <!-- MOBILE NAV MENU -->
   <div class="nav-mobile" id="navMobile">
-    <a href="#explore" onclick="closeMobileNav()">What's New</a>
     <a href="#stack" onclick="closeMobileNav()">My Stack</a>
   </div>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="eyebrow">Welcome to</div>
-    <h1 class="hero-title">
-      B<span class="gradient">I</span>N
-    </h1>
-    <p class="hero-sub">
-      I'm a student and here I share what I learn and explore in <em>AI</em><br>
-      — All stuff about AI is available in BIN
-    </p>
-    <div class="cta-bar">
-      <a href="#explore" class="btn btn-primary">What's NEW!</a>
-      <a href="#stack" class="btn btn-outline">My Stack →</a>
+  <div style="position: relative; height: 5300px;" id="heroWrap">
+    <section class="hero" id="heroSection">
+      <!-- Chrome group: fades out as one unit -->
+      <div class="hero-chrome-wrap" id="heroChrome">
+        <div class="eyebrow" id="heroEyebrow">Welcome to</div>
+        <h1 class="hero-title" id="heroTitle">
+          B<span class="gradient">I</span>N
+        </h1>
+        <p class="hero-sub" id="heroSub">
+          I’m a student sharing my journey of learning and exploring <em>AI</em><br>
+          All AI-related resources and insights are consolidated and available in BIN.
+        </p>
+        <div class="cta-bar" id="heroCta">
+          <a href="#stack" class="btn btn-outline">My Stack →</a>
+        </div>
+      </div>
+      <!-- Scroll hint: anchored to hero bottom, outside chrome flow -->
+      <div class="scroll-hint" id="heroScrollHint">
+        <span>Scroll</span>
+        <div class="scroll-dot"></div>
+      </div>
+      <!-- Brain phrase: absolute overlay, always centered, never in flow -->
+      <div class="bin-phrase" id="binPhrase">
+        <span class="bin-static">Brain</span>
+      <span class="bin-word-wrap"><span class="bin-word" id="binWord" style="color:#00d4ff;">Integration</span></span>
+        <span class="bin-static">Neurons</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- TOPICS / STACK -->
+  <div class="topics" id="stack">
+    <div class="topics-inner">
+      <div class="section-label">My Exploration Stuff</div>
+      <div class="tags-wrap">
+        <span class="tag">
+          <a href="sqlbasics.html">SQL</a>
+        </span>
+        <span class="tag">Python</span>
+        <span class="tag">Mathematics</span>
+        <span class="tag">Statistics</span>
+        <span class="tag">Data Analytics</span>
+        <span class="tag">Data Visualisation</span>
+        <span class="tag">Machine Learning</span>
+        <span class="tag">Deep Learning</span>
+        <span class="tag">Transformers</span>
+        <span class="tag">NLP</span>
+        <span class="tag">LLMs</span>
+        <span class="tag">Generative AI</span>
+        <span class="tag">Computer Vision</span>
+        <span class="tag">Agentic AI</span>
+        <span class="tag">Deployment &amp; MLops</span>
+        <span class="tag">Research</span>
+        <!-- <span class="tag">Physical AI</span>
+        <span class="tag-soon">Conscious AI</span>
+        <span class="tag-soon">Neural Networks</span>
+        <span class="tag-soon">Linear Algebra</span>
+        <span class="tag-soon">Calculus</span>
+        <span class="tag-soon">Statistics</span>
+        <span class="tag-soon">Transformer Models</span>
+        <span class="tag-soon">Computer Vision</span>
+        <span class="tag-soon">NLP</span>
+        <span class="tag-soon">Reinforcement Learning</span> -->
+      </div>
     </div>
-    <div class="scroll-hint">
-      <span>Scroll</span>
-      <div class="scroll-dot"></div>
-    </div>
-  </section>
+  </div>
 
   <!-- AXIOMS -->
-  <section class="section">
+  <section class="section axioms-hidden" id="axiomsSection">
     <div class="section-label">Core Axioms</div>
     <div class="axioms-grid">
       <div class="axiom">
@@ -201,47 +411,6 @@
     </div>
   </section>
 
-  <!-- EQUATION STACK / WHAT'S NEW -->
-  <section class="section" id="explore">
-    <div class="section-label">What's NEW</div>
-    <div class="equation-stack">
-      <div class="eq-line">
-        <span class="eq-arrow">1 Mar 2026</span>
-        <span class="eq-divider">|</span>
-        <div class="eq-text">
-          Welcome — Today is the 1<sup>st</sup> day where I created this page with the help of <strong>Claude-AI</strong>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TOPICS / STACK -->
-  <div class="topics" id="stack">
-    <div class="topics-inner">
-      <div class="section-label">My Exploration Stuff</div>
-      <div class="tags-wrap">
-        <span class="tag">
-          <a href="sqlbasics.html">SQL</a>
-        </span>
-        <span class="tag">Python</span>
-        <span class="tag">Data Science</span>
-        <span class="tag">Machine Learning</span>
-        <span class="tag">Deep Learning</span>
-        <span class="tag">Generative AI</span>
-        <span class="tag">Physical AI</span>
-        <span class="tag-soon">Conscious AI</span>
-        <span class="tag-soon">Neural Networks</span>
-        <span class="tag-soon">Linear Algebra</span>
-        <span class="tag-soon">Calculus</span>
-        <span class="tag-soon">Statistics</span>
-        <span class="tag-soon">Transformer Models</span>
-        <span class="tag-soon">Computer Vision</span>
-        <span class="tag-soon">NLP</span>
-        <span class="tag-soon">Reinforcement Learning</span>
-      </div>
-    </div>
-  </div>
-
   <!-- PHILOSOPHY -->
   <section class="philosophy">
     <div class="phil-text">
@@ -273,7 +442,7 @@
       <div class="separator">|</div>
       <div class="mantra-word" data-label="create">Build</div>
       <div class="separator">|</div>
-      <div class="mantra-word" data-label="iterate">Evolve</div>
+      <div class="mantra-word" data-label="iterate" style="color:#c8ff00;">Evolve</div>
     </div>
   </section>
 
@@ -382,6 +551,162 @@
 
   wrap.addEventListener('mouseleave', () => closeFolder());
 
+
+  /* ---- HERO FIXED → RELEASE AT 3000px ---- */
+  (function () {
+    const hero          = document.getElementById('heroSection');
+    const binPhrase     = document.getElementById('binPhrase');
+    const binWordEl     = document.getElementById('binWord');
+    const axiomsSection = document.getElementById('axiomsSection');
+    const THRESHOLD     = 5200;
+
+    /* Single chrome wrapper + scroll hint */
+    const chromeWrap   = document.getElementById('heroChrome');
+    const scrollHint   = document.getElementById('heroScrollHint');
+
+    /* Middle words with their colors */
+    const words = [
+      { text: 'Integration', color: '#00d4ff' },
+      { text: 'Inference',   color: '#7c3aed' },
+      { text: 'Interconnect',color: '#f59e0b' },
+      { text: 'Impulse',     color: '#c8ff00' }
+    ];
+
+    /* Word-swap every 1000px starting at 400px */
+    const stages = [
+      { min: 0,    max: 399  },
+      { min: 400,  max: 1399 },
+      { min: 1400, max: 2399 },
+      { min: 2400, max: 3399 },
+      { min: 3400, max: Infinity }
+    ];
+
+    /* Crossfade zone: 450px → 550px (100px gap after chrome at 400px) */
+    const FADE_START = 450;
+    const FADE_END   = 550;
+
+    let currentStage = 0;
+    let animating    = false;
+
+    function getStageIndex(sy) {
+      return stages.findIndex(s => sy >= s.min && sy <= s.max);
+    }
+
+    function animateWord(newWord, newColor, direction) {
+      if (animating || !binWordEl) return;
+      animating = true;
+
+      const outClass = direction === 'forward' ? 'slide-out-up'  : 'slide-out-down';
+      const inClass  = direction === 'forward' ? 'slide-in-down' : 'slide-in-up';
+
+      binWordEl.classList.add(outClass);
+      setTimeout(() => {
+        binWordEl.textContent  = newWord;
+        binWordEl.style.color  = newColor;
+        binWordEl.classList.remove(outClass);
+        binWordEl.classList.add(inClass);
+        binWordEl.addEventListener('animationend', () => {
+          binWordEl.classList.remove(inClass);
+          animating = false;
+        }, { once: true });
+      }, 340);
+    }
+
+    function onScroll() {
+      const sy  = window.scrollY;
+      const idx = getStageIndex(sy);
+
+      /* ── Smooth crossfade in the 350–450px zone ── */
+      if (sy >= FADE_START && sy <= FADE_END) {
+        const t = (sy - FADE_START) / (FADE_END - FADE_START);
+        chromeWrap.style.transition = 'none';
+        chromeWrap.style.opacity    = String(1 - t);
+        chromeWrap.style.transform  = `translateY(${-18 * t}px)`;
+        chromeWrap.style.pointerEvents = t > 0.5 ? 'none' : '';
+        if (scrollHint) { scrollHint.style.transition = 'none'; scrollHint.style.opacity = String(1 - t); }
+        binPhrase.style.transition  = 'none';
+        binPhrase.style.opacity     = String(t);
+        binPhrase.style.transform   = `translate(-50%, -50%) scale(${0.7 + 0.3 * t})`;
+        binPhrase.classList.remove('phrase-visible');
+
+      } else if (sy > FADE_END) {
+        chromeWrap.style.transition  = '';
+        chromeWrap.style.opacity     = '';
+        chromeWrap.style.transform   = '';
+        chromeWrap.classList.add('fade-out');
+        if (scrollHint) { scrollHint.style.transition = ''; scrollHint.style.opacity = '0'; scrollHint.style.pointerEvents = 'none'; }
+        binPhrase.style.transition   = '';
+        binPhrase.style.opacity      = '';
+        binPhrase.style.transform    = '';
+        binPhrase.classList.add('phrase-visible');
+
+      } else {
+        chromeWrap.style.transition  = '';
+        chromeWrap.style.opacity     = '';
+        chromeWrap.style.transform   = '';
+        chromeWrap.classList.remove('fade-out');
+        if (scrollHint) { scrollHint.style.transition = ''; scrollHint.style.opacity = ''; scrollHint.style.pointerEvents = ''; }
+        binPhrase.style.transition   = '';
+        binPhrase.style.opacity      = '';
+        binPhrase.style.transform    = '';
+        binPhrase.classList.remove('phrase-visible');
+      }
+
+      /* ── Word swap on stage change ── */
+      if (idx !== -1 && idx !== currentStage) {
+        const dir = idx > currentStage ? 'forward' : 'backward';
+        if (idx >= 1) {
+          const w = words[idx - 1];
+          animateWord(w.text, w.color, dir);
+        }
+        currentStage = idx;
+      }
+
+      /* ── Fade Brain phrase out as hero approaches release (4100–4350px) ── */
+      const PHRASE_FADE_START = 4400;
+      const PHRASE_FADE_END   = 4650;
+      if (sy >= PHRASE_FADE_START && sy < PHRASE_FADE_END) {
+        const pt = (sy - PHRASE_FADE_START) / (PHRASE_FADE_END - PHRASE_FADE_START);
+        binPhrase.style.transition = 'none';
+        binPhrase.style.opacity    = String(Math.max(0, 1 - pt));
+      } else if (sy >= PHRASE_FADE_END) {
+        binPhrase.style.transition = '';
+        binPhrase.style.opacity    = '0';
+        binPhrase.classList.remove('phrase-visible');
+      }
+
+      /* ── Reveal axioms only after Brain phrase is fully gone (4750px+) ── */
+      if (sy >= 4750) {
+        axiomsSection.classList.remove('axioms-hidden');
+        axiomsSection.classList.add('axioms-visible');
+      } else {
+        axiomsSection.classList.remove('axioms-visible');
+        axiomsSection.classList.add('axioms-hidden');
+      }
+
+      /* ── Fixed / release ── */
+      if (sy < THRESHOLD) {
+        hero.style.position = 'fixed';
+        hero.style.top      = '0';
+        hero.style.left     = '0';
+        hero.style.width    = '100%';
+      } else {
+        hero.style.position = 'absolute';
+        hero.style.top      = THRESHOLD + 'px';
+        hero.style.left     = '0';
+        hero.style.width    = '100%';
+      }
+    }
+
+    /* Set initial state */
+    hero.style.position = 'fixed';
+    hero.style.top      = '0';
+    hero.style.left     = '0';
+    hero.style.width    = '100%';
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+
   /* ---- NAV ACTIVE LINK ---- */
   const allNavLinks = document.querySelectorAll('.nav-links a, .nav-mobile a');
   allNavLinks.forEach(a => a.addEventListener('click', function () {
@@ -389,6 +714,35 @@
     document.querySelectorAll(`a[href="${this.getAttribute('href')}"]`)
       .forEach(l => l.classList.add('active'));
   }));
+
+  /* ---- FOLDER LOGO COLOR CYCLE (every 10s) ---- */
+  (function () {
+    const colors = [1, 2, 3, 4];
+    let current = 0;
+
+    const back  = document.querySelector('.folder-back');
+    const tab   = document.querySelector('.folder-tab');
+    const front = document.querySelector('.folder-front');
+
+    function applyColor(idx) {
+      const n = colors[idx];
+      back.style.transition  = 'fill 1.2s ease';
+      tab.style.transition   = 'fill 1.2s ease';
+      front.style.transition = 'fill 1.2s ease';
+      back.setAttribute('fill',  `url(#paintBack${n})`);
+      tab.setAttribute('fill',   `url(#paintTab${n})`);
+      front.setAttribute('fill', `url(#paintFront${n})`);
+    }
+
+    // Apply initial color
+    applyColor(current);
+
+    setInterval(() => {
+      current = (current + 1) % colors.length;
+      applyColor(current);
+    }, 10000);
+  })();
+
 </script>
 </body>
 </html>
