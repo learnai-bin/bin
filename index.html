@@ -177,16 +177,11 @@
     <div class="bin-wrap" id="binWrap">
 
   <!-- Single sliding page -->
-  <div class="slide-page" id="slidePage">
-
-    <!-- Link track img / Link proceed name-->
-    <img class="sl-name" src="sql_logo.png" alt="SQL Logo" width="15px" height="15px"/>
-
-    <!-- Line elements -->
-    <div class="sl-line"></div>
-    <div class="sl-line"></div>
-    <div class="sl-line"></div>
-    <div class="sl-line"></div>
+  <div class="slide-page" id="slidePage" style="justify-content:space-evenly; padding: 4px 5px; top: 16px;">
+    <div class="sl-line" style="width:35%;"></div>
+    <div class="sl-line" style="width:65%;"></div>
+    <div class="sl-line" style="width:45%;"></div>
+    <div class="sl-line" style="width:90%;"></div>
   </div>
   <!-- Folder SVG -->
   <svg class="folder-svg" id="folderSvg" viewBox="0 0 120 100">
@@ -351,15 +346,27 @@
           <span>SQL</span>
         </a>
 
-        <div class="explore-card disabled">
+        <a class="explore-card" href="python.html">
           <div class="ec-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python"></div>
           <span>Python</span>
-        </div>
+        </a>
 
         <div class="explore-card disabled">
           <div class="ec-icon">
             <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
-              <text x="2" y="50" font-size="48" fill="#00d4ff" font-family="Georgia,serif" font-style="italic">∑</text>
+              <!-- ∫ integral sign -->
+              <path d="M13 11 Q9 11 9 16 L9 48 Q9 53 5 53" stroke="#00d4ff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+              <circle cx="13" cy="10" r="2.2" fill="#00d4ff"/>
+              <circle cx="5"  cy="54" r="2.2" fill="#00d4ff"/>
+              <!-- d/dx fraction: d on top, line, dx on bottom -->
+              <!-- "d" numerator -->
+              <text x="17" y="27" font-size="9" fill="#00d4ff" font-family="Georgia,serif" font-style="italic">d</text>
+              <!-- fraction bar -->
+              <line x1="17" y1="30" x2="30" y2="30" stroke="#00d4ff" stroke-width="1.4" stroke-linecap="round"/>
+              <!-- "dx" denominator -->
+              <text x="17" y="40" font-size="9" fill="#00d4ff" font-family="Georgia,serif" font-style="italic">dx</text>
+              <!-- f(x) -->
+              <text x="33" y="36" font-size="10" fill="#00d4ff" font-family="Georgia,serif" font-style="italic">f(x)</text>
             </svg>
           </div>
           <span>Mathematics</span>
@@ -368,7 +375,14 @@
         <div class="explore-card disabled">
           <div class="ec-icon">
             <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
-              <polyline points="4,52 18,28 30,40 44,14 60,22" stroke="#00d4ff" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- baseline -->
+              <line x1="8" y1="54" x2="56" y2="54" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- bars -->
+              <rect x="12" y="38" width="9" height="16" rx="2" fill="#00d4ff" opacity="0.55"/>
+              <rect x="25" y="24" width="9" height="30" rx="2" fill="#00d4ff" opacity="0.8"/>
+              <rect x="38" y="14" width="9" height="40" rx="2" fill="#00d4ff"/>
+              <!-- y-axis tick marks -->
+              <line x1="8" y1="14" x2="8" y2="54" stroke="rgba(0,212,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
           </div>
           <span>Statistics</span>
@@ -380,7 +394,20 @@
         </div>
 
         <div class="explore-card disabled">
-          <div class="ec-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/matplotlib/matplotlib-original.svg" alt="Data Visualisation"></div>
+          <div class="ec-icon">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+              <!-- filled area chart -->
+              <path d="M6 50 Q14 50 18 34 Q24 14 32 22 Q40 30 46 18 Q52 8 58 14 L58 54 L6 54 Z" fill="rgba(0,212,255,0.15)"/>
+              <!-- line on top of area -->
+              <path d="M6 50 Q14 50 18 34 Q24 14 32 22 Q40 30 46 18 Q52 8 58 14" stroke="#00d4ff" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- data point dots -->
+              <circle cx="18" cy="34" r="2.8" fill="#00d4ff"/>
+              <circle cx="32" cy="22" r="2.8" fill="#00d4ff"/>
+              <circle cx="46" cy="18" r="2.8" fill="#00d4ff"/>
+              <!-- baseline -->
+              <line x1="6" y1="54" x2="58" y2="54" stroke="rgba(0,212,255,0.35)" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
           <span>Data Visualisation</span>
         </div>
 
@@ -760,53 +787,339 @@
   })();
   </script>
 
+  <script>
+  /* ── TOPICS top-border: shine sweeps with scroll ── */
+  (function () {
+    const topics = document.getElementById('stack');
+    if (!topics) return;
+
+    topics.style.position = 'relative';
+
+    /* Dim base line — always visible */
+    const base = document.createElement('div');
+    base.style.cssText = `
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: rgba(0,212,255,0.12);
+      pointer-events: none;
+      z-index: 2;
+    `;
+    topics.prepend(base);
+
+    /* Shine — a soft bright spot that travels left → right on scroll down, right → left on scroll up */
+    const shine = document.createElement('div');
+    shine.style.cssText = `
+      position: absolute;
+      top: -1px; left: 0;
+      height: 4px;
+      width: 220px;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0,212,255,0.12) 18%,
+        rgba(0,212,255,0.7) 38%,
+        rgba(120,240,255,1) 50%,
+        rgba(0,212,255,0.7) 62%,
+        rgba(0,212,255,0.12) 82%,
+        transparent 100%
+      );
+      filter: blur(0.6px);
+      pointer-events: none;
+      z-index: 3;
+      will-change: transform;
+    `;
+    topics.prepend(shine);
+
+    let raf = null;
+
+    function tick() {
+      const rect     = topics.getBoundingClientRect();
+      const total    = topics.offsetHeight + window.innerHeight;
+      /* 0 = section just entered viewport bottom, 1 = section scrolled past top */
+      const progress = Math.min(1, Math.max(0, (window.innerHeight - rect.top) / total));
+
+      /* shine centre travels from -110px (off left) to width+110px (off right) */
+      const w      = topics.offsetWidth;
+      const x      = -110 + progress * (w + 220);
+      shine.style.transform = `translateX(${x}px)`;
+      raf = null;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    }, { passive: true });
+
+    tick();
+  })();
+  </script>
+
   <!-- AXIOMS -->
   <section class="section axioms-hidden" id="axiomsSection">
     <div class="section-label">Core Axioms</div>
-    <div class="axioms-grid">
-      <div class="axiom">
-        <div class="axiom-num">AXIOM 01</div>
-        <blockquote>If you want to describe the Universe with <strong>Logic</strong> — understand the Universe with <strong>Math</strong>.</blockquote>
+
+    <div class="axioms-timeline">
+
+      <!-- centre spine -->
+      <div class="tl-spine"></div>
+
+      <!-- AXIOM 01 — LEFT -->
+      <div class="tl-row">
+        <div class="tl-card tl-left">
+          <div class="axiom-num">AXIOM 01</div>
+          <blockquote>If you want to describe the Universe with <strong>Logic</strong> — understand the Universe with <strong>Math</strong>.</blockquote>
+        </div>
+        <div class="tl-node"><span></span></div>
+        <div class="tl-empty"></div>
       </div>
-      <div class="axiom">
-        <div class="axiom-num">AXIOM 02</div>
-        <blockquote>A mathematical equation means the same thing to every intelligent being, anywhere in the <strong>universe</strong>.</blockquote>
+
+      <!-- AXIOM 02 — RIGHT -->
+      <div class="tl-row">
+        <div class="tl-empty"></div>
+        <div class="tl-node"><span></span></div>
+        <div class="tl-card tl-right">
+          <div class="axiom-num">AXIOM 02</div>
+          <blockquote>A mathematical equation means the same thing to every intelligent being, anywhere in the <strong>universe</strong>.</blockquote>
+        </div>
       </div>
-      <div class="axiom">
-        <div class="axiom-num">AXIOM 03</div>
-        <blockquote><strong>Physics</strong> would be Philosophy — with Mathematics, Physics becomes <strong>Science</strong>.</blockquote>
+
+      <!-- AXIOM 03 — LEFT -->
+      <div class="tl-row">
+        <div class="tl-card tl-left">
+          <div class="axiom-num">AXIOM 03</div>
+          <blockquote><strong>Physics</strong> would be Philosophy — with Mathematics, Physics becomes <strong>Science</strong>.</blockquote>
+        </div>
+        <div class="tl-node"><span></span></div>
+        <div class="tl-empty"></div>
       </div>
-      <div class="axiom">
-        <div class="axiom-num">AXIOM 04</div>
-        <blockquote>Mathematics turns physical intuition into <strong>Universal Laws</strong>.</blockquote>
+
+      <!-- AXIOM 04 — RIGHT -->
+      <div class="tl-row">
+        <div class="tl-empty"></div>
+        <div class="tl-node"><span></span></div>
+        <div class="tl-card tl-right">
+          <div class="axiom-num">AXIOM 04</div>
+          <blockquote>Mathematics turns physical intuition into <strong>Universal Laws</strong>.</blockquote>
+        </div>
       </div>
-      <div class="axiom">
-        <div class="axiom-num">AXIOM 05</div>
-        <blockquote>Mathematics is the <strong>blueprint</strong>, programming language is the construction tool, the program is the <strong>building</strong>.</blockquote>
+
+      <!-- AXIOM 05 — LEFT -->
+      <div class="tl-row">
+        <div class="tl-card tl-left">
+          <div class="axiom-num">AXIOM 05</div>
+          <blockquote>Mathematics is the <strong>blueprint</strong>, programming language is the construction tool, the program is the <strong>building</strong>.</blockquote>
+        </div>
+        <div class="tl-node"><span></span></div>
+        <div class="tl-empty"></div>
       </div>
-      <div class="axiom">
-        <div class="axiom-num">AXIOM 06</div>
-        <blockquote>
-          <span style="color:var(--accent3); font-style:normal;">f(x) → </span>
-          Mathematics learns <strong>PATTERNS</strong> in data — executed by computers — inspired by human brains.
-        </blockquote>
+
+      <!-- AXIOM 06 — RIGHT -->
+      <div class="tl-row">
+        <div class="tl-empty"></div>
+        <div class="tl-node"><span></span></div>
+        <div class="tl-card tl-right">
+          <div class="axiom-num">AXIOM 06</div>
+          <blockquote>
+            <span style="color:var(--accent3); font-style:normal;">f(x) → </span>
+            Mathematics learns <strong>PATTERNS</strong> in data — executed by computers — inspired by human brains.
+          </blockquote>
+        </div>
       </div>
-      <div class="axiom">
-        <div class="axiom-num">AXIOM 07</div>
-        <blockquote>
-          <span style="color:var(--accent3); font-style:normal;">∴ </span>
-          <strong>PROGRAMMING</strong> is Mathematics — translated into instructions a computer can execute.
-        </blockquote>
+
+      <!-- AXIOM 07 — LEFT -->
+      <div class="tl-row">
+        <div class="tl-card tl-left">
+          <div class="axiom-num">AXIOM 07</div>
+          <blockquote>
+            <span style="color:var(--accent3); font-style:normal;">∴ </span>
+            <strong>PROGRAMMING</strong> is Mathematics — translated into instructions a computer can execute.
+          </blockquote>
+        </div>
+        <div class="tl-node"><span></span></div>
+        <div class="tl-empty"></div>
       </div>
-      <div class="axiom">
-        <div class="axiom-num">AXIOM 08</div>
-        <blockquote>
-          <span style="color:var(--accent3); font-style:normal;">∂ </span>
-          True learning comes from understanding the <strong>LOGIC</strong> behind concepts — not just memorizing syntax.
-        </blockquote>
+
+      <!-- AXIOM 08 — RIGHT -->
+      <div class="tl-row">
+        <div class="tl-empty"></div>
+        <div class="tl-node"><span></span></div>
+        <div class="tl-card tl-right">
+          <div class="axiom-num">AXIOM 08</div>
+          <blockquote>
+            <span style="color:var(--accent3); font-style:normal;">∂ </span>
+            True learning comes from understanding the <strong>LOGIC</strong> behind concepts — not just memorizing syntax.
+          </blockquote>
+        </div>
       </div>
+
     </div>
   </section>
+
+  <style>
+    /* ══════════════════════════
+       AXIOMS TIMELINE
+    ══════════════════════════ */
+    .axioms-timeline {
+      position: relative;
+      width: 100%;
+      max-width: 860px;
+      margin: 2.5rem auto 0;
+      padding: 0 1rem;
+    }
+
+    /* vertical centre spine */
+    .tl-spine {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(0,212,255,0.55) 6%,
+        rgba(124,58,237,0.55) 50%,
+        rgba(0,212,255,0.55) 94%,
+        transparent
+      );
+      z-index: 0;
+    }
+
+    /* each row = left-half | node | right-half */
+    .tl-row {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 2.2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tl-empty { /* placeholder on opposite side */ }
+
+    /* dot on the spine */
+    .tl-node {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .tl-node span {
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #00d4ff;
+      box-shadow: 0 0 0 3px rgba(0,212,255,0.18), 0 0 10px rgba(0,212,255,0.5);
+      flex-shrink: 0;
+    }
+
+    /* card shared */
+    .tl-card {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(0,212,255,0.14);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      transition: border-color 0.6s ease, box-shadow 0.6s ease;
+    }
+    .tl-card.glow {
+      border-color: rgba(0,212,255,0.7);
+      box-shadow: 0 0 18px rgba(0,212,255,0.35), 0 0 6px rgba(0,212,255,0.2);
+    }
+
+    /* left card: align text right, connect to spine */
+    .tl-left {
+      text-align: right;
+      margin-right: 0.8rem;
+    }
+    /* right card: align text left, connect to spine */
+    .tl-right {
+      text-align: left;
+      margin-left: 0.8rem;
+    }
+
+    .tl-card .axiom-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: #00d4ff;
+      margin-bottom: 0.45rem;
+      opacity: 0.75;
+    }
+    .tl-card blockquote {
+      font-family: 'Crimson Pro', 'Georgia', serif;
+      font-style: italic;
+      font-size: clamp(0.82rem, 1.4vw, 0.97rem);
+      color: rgba(220,220,240,0.88);
+      line-height: 1.6;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+    .tl-card blockquote strong {
+      color: #ffffff;
+      font-style: normal;
+    }
+
+    /* ── mobile: stack everything centre ── */
+    @media (max-width: 600px) {
+      .tl-spine { left: 16px; transform: none; }
+      .tl-row   { grid-template-columns: 28px 1fr; }
+      .tl-node  { grid-column: 1; grid-row: 1; }
+      .tl-card  { grid-column: 2; grid-row: 1; text-align: left; margin: 0 0 0 0.6rem; }
+      .tl-empty { display: none; }
+      .tl-left  { margin-right: 0; }
+      .tl-right { margin-left: 0; }
+    }
+  </style>
+
+  <script>
+  /* ── AXIOM CARDS: only ONE card glows at a time (most centred in viewport) ── */
+  (function () {
+    const cards = Array.from(document.querySelectorAll('.tl-card'));
+    let rafId = null;
+
+    function updateGlow() {
+      const mid = window.innerHeight / 2;
+      let bestCard = null;
+      let bestDist = Infinity;
+
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        /* card must be at least partially in view */
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+        const cardMid = rect.top + rect.height / 2;
+        const dist = Math.abs(cardMid - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestCard = card;
+        }
+      });
+
+      cards.forEach(card => {
+        if (card === bestCard) {
+          card.classList.add('glow');
+        } else {
+          card.classList.remove('glow');
+        }
+      });
+    }
+
+    function onScroll() {
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          updateGlow();
+          rafId = null;
+        });
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateGlow(); /* run once on load */
+  })();
+  </script>
 
   <!-- PHILOSOPHY -->
   <section class="philosophy">
@@ -814,21 +1127,145 @@
       <h2>Code as <span>Thought</span> Manifest</h2>
       <p>Where mathematics formalizes intuition, code gives it motion. Every function is a thought made executable.</p>
     </div>
-    <div class="code-block">
-      <span class="cm"># The Universe's function signature</span><br>
-      <span class="kw">def</span> <span class="fn">universe</span>(math: <span class="str">'blueprint'</span>,<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;code: <span class="str">'construction'</span>,<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logic: <span class="str">'foundation'</span>) → <span class="str">'science'</span>:<br>
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># Physics + Math = Universal Law</span><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;intuition = math.formalize(physics)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;law = intuition.generalize(<span class="num">∞</span>)<br>
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> law.execute(universe)<br>
-      <br>
-      <span class="cm"># Learn | Think | Build | Evolve</span>
-    </div>
+    <div class="code-block" id="codeBlock"><span id="codeOutput"></span><span class="code-cursor" id="codeCursor">▋</span></div>
   </section>
+
+  <style>
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+    .code-cursor {
+      display: inline-block;
+      color: #00d4ff;
+      animation: cursorBlink 0.75s step-end infinite;
+      margin-left: 1px;
+      font-size: 1em;
+      vertical-align: baseline;
+    }
+    .code-cursor.done {
+      animation: none;
+      opacity: 0;
+    }
+  </style>
+
+  <script>
+  (function () {
+    /* ── Token types for syntax highlighting ── */
+    const KW  = 'kw',  FN = 'fn', CM = 'cm', STR = 'str', NUM = 'num', TX = '';
+
+    /* Each entry: [text, type]
+       Empty string = blank line (rendered as <br>) */
+    const lines = [
+      [['# The Universe\'s function signature', CM]],
+      [['def ', KW], ['universe', FN], ['(math: ', TX], ["'blueprint'", STR], [',', TX]],
+      [['               code: ', TX], ["'construction'", STR], [',', TX]],
+      [['               logic: ', TX], ["'foundation'", STR], [') → ', TX], ["'science'", STR], [':', TX]],
+      [],
+      [['    ', TX], ['# Physics + Math = Universal Law', CM]],
+      [['    intuition = math.formalize(physics)', TX]],
+      [['    law = intuition.generalize(', TX], ['∞', NUM], [')', TX]],
+      [],
+      [['    ', KW], ['return', KW], [' law.execute(universe)', TX]],
+      [],
+      [['# Learn | Think | Build | Evolve', CM]],
+      [],
+      [['# ── BIN in code ──────────────────────', CM]],
+      [['def ', KW], ['bin', FN], ['(data):', TX]],
+      [['    knowledge = ', TX], ['integrate', FN], ['(data)', TX], ['        # Brain — absorb everything', CM]],
+      [['    insight   = ', TX], ['infer', FN], ['(knowledge)', TX], ['     # Integration — find patterns', CM]],
+      [['    network   = ', TX], ['connect', FN], ['(insight)', TX], ['       # Neurons — link ideas', CM]],
+      [['    output    = ', TX], ['impulse', FN], ['(network)', TX], ['       # Signal — act on it', CM]],
+      [['    ', TX], ['return', KW], [' output', TX]],
+    ];
+
+    /* Flatten lines into a sequence of typed "segments"
+       Each segment: { html: string, charCount: number } */
+    function buildSegments() {
+      const segments = [];
+      lines.forEach((tokens, li) => {
+        if (tokens.length === 0) {
+          segments.push({ html: '<br>', chars: 0, isBreak: true });
+          return;
+        }
+        tokens.forEach(([text, type]) => {
+          const escaped = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          const html = type ? `<span class="${type}">${escaped}</span>` : escaped;
+          segments.push({ html, chars: text.length, type, raw: text });
+        });
+        segments.push({ html: '<br>', chars: 0, isBreak: true });
+      });
+      return segments;
+    }
+
+    const segments  = buildSegments();
+    const totalChars = segments.reduce((s, seg) => s + seg.chars, 0);
+    const DURATION  = 10000; /* ms — total typing time */
+    const charDelay = DURATION / totalChars;
+
+    const output = document.getElementById('codeOutput');
+    const cursor = document.getElementById('codeCursor');
+    let   started = false;
+
+    function startTyping() {
+      if (started) return;
+      started = true;
+
+      let segIdx  = 0;
+      let charIdx = 0;   /* position within current segment's raw text */
+      let rendered = ''; /* fully rendered HTML so far */
+
+      function typeNext() {
+        if (segIdx >= segments.length) {
+          cursor.classList.add('done');
+          return;
+        }
+
+        const seg = segments[segIdx];
+
+        /* Zero-char segments (line breaks) — emit immediately */
+        if (seg.chars === 0) {
+          rendered += seg.html;
+          output.innerHTML = rendered;
+          segIdx++;
+          charIdx = 0;
+          requestAnimationFrame(typeNext);
+          return;
+        }
+
+        /* Type one character at a time */
+        charIdx++;
+        const slice   = seg.raw.slice(0, charIdx);
+        const escaped = slice.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const partial = seg.type ? `<span class="${seg.type}">${escaped}</span>` : escaped;
+        output.innerHTML = rendered + partial;
+
+        if (charIdx >= seg.raw.length) {
+          rendered += seg.html;
+          segIdx++;
+          charIdx = 0;
+        }
+
+        setTimeout(typeNext, charDelay);
+      }
+
+      typeNext();
+    }
+
+    /* Trigger when code block enters viewport */
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        startTyping();
+        obs.disconnect();
+      }
+    }, { threshold: 0.25 });
+
+    obs.observe(document.getElementById('codeBlock'));
+  })();
+  </script>
 
   <!-- MANTRA -->
   <section class="mantra">
@@ -1064,15 +1501,12 @@
         chromeWrap.style.transform   = 'translateY(0)';
         chromeWrap.style.pointerEvents = '';
         chromeWrap.classList.remove('fade-out');
-        if (scrollHint) { scrollHint.style.transition = 'none'; scrollHint.style.opacity = '1'; scrollHint.style.pointerEvents = ''; }
-
       } else if (sy <= FADE_END) {
         const t = (sy - FADE_START) / (FADE_END - FADE_START);
         chromeWrap.style.transition  = 'none';
         chromeWrap.style.opacity     = String(1 - t);
         chromeWrap.style.transform   = `translateY(${-18 * t}px)`;
         chromeWrap.style.pointerEvents = t > 0.5 ? 'none' : '';
-        if (scrollHint) { scrollHint.style.transition = 'none'; scrollHint.style.opacity = String(1 - t); }
 
       } else {
         chromeWrap.style.transition  = 'none';
@@ -1080,11 +1514,26 @@
         chromeWrap.style.transform   = 'translateY(-18px)';
         chromeWrap.style.pointerEvents = 'none';
         chromeWrap.classList.add('fade-out');
-        if (scrollHint) { scrollHint.style.transition = 'none'; scrollHint.style.opacity = '0'; scrollHint.style.pointerEvents = 'none'; }
       }
 
       /* ── Phrase: always driven by scroll position, never by CSS transition ── */
       applyPhrase(sy);
+
+      /* ── Scroll hint: visible until Brain/Impulse/Neurons phrase fades out ── */
+      if (scrollHint) {
+        let hintOpacity;
+        if (sy < PHRASE_FADE_START) {
+          hintOpacity = 1;
+        } else if (sy <= PHRASE_FADE_END) {
+          hintOpacity = 1 - (sy - PHRASE_FADE_START) / (PHRASE_FADE_END - PHRASE_FADE_START);
+        } else {
+          hintOpacity = 0;
+        }
+        scrollHint.style.transition    = 'none';
+        scrollHint.style.opacity       = String(hintOpacity);
+        scrollHint.style.visibility    = hintOpacity === 0 ? 'hidden' : 'visible';
+        scrollHint.style.pointerEvents = hintOpacity === 0 ? 'none' : '';
+      }
 
       /* ── Word swap on stage change ── */
       if (idx !== -1 && idx !== currentStage) {
@@ -1170,7 +1619,7 @@
       tab.style.transition   = 'fill 1.2s ease';
       front.style.transition = 'fill 1.2s ease';
       back.setAttribute('fill',  `url(#paintBack${n})`);
-      tab.setAttribute('fill',   `url(#p,aintTab${n})`);
+      tab.setAttribute('fill',   `url(#paintTab${n})`);
       front.setAttribute('fill', `url(#paintFront${n})`);
     }
 
