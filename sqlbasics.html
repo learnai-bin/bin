@@ -707,29 +707,163 @@ const resize = () => { W = CV.width = innerWidth; H = CV.height = innerHeight; }
 resize();
 addEventListener('resize', resize);
 
-// ── Sky state ────────────────────────────────────────────────
-const SKY = {
-  phase:      'night',   // 'morning' | 'day' | 'evening' | 'night'
-  isOvercast: false,
-  lat:        13.6288,
-  lon:        79.4192,
-  locName:    'Tirupati District',
-};
+// ── Sky palette keyframes (exact from reference) ─────────────
+const SKY_KEYS = [
+  [ 0.0,  [ [0,'#020208'],[0.5,'#06091a'],[1,'#0a1228'] ]],
+  [ 4.5,  [ [0,'#020208'],[0.5,'#06091a'],[1,'#0a1228'] ]],
+  [ 5.5,  [ [0,'#100830'],[0.25,'#5a1e10'],[0.55,'#b84018'],[0.78,'#e0784a'],[1,'#f5c08a'] ]],
+  [ 6.5,  [ [0,'#1a1040'],[0.2,'#7b2a14'],[0.45,'#d45525'],[0.68,'#f09050'],[1,'#fcdaa0'] ]],
+  [ 8.0,  [ [0,'#2e7ab8'],[0.45,'#6ab8ee'],[1,'#a8d8f8'] ]],
+  [11.0,  [ [0,'#2a8ad4'],[0.45,'#65b8f0'],[1,'#a8d8f8'] ]],
+  [15.0,  [ [0,'#2a8ad4'],[0.45,'#65b8f0'],[1,'#a8d8f8'] ]],
+  [16.5,  [ [0,'#1e2c55'],[0.25,'#8a3520'],[0.52,'#cc5a26'],[0.72,'#e89050'],[1,'#f8ce90'] ]],
+  [18.0,  [ [0,'#14183a'],[0.22,'#6a2018'],[0.50,'#b84020'],[0.72,'#d87840'],[1,'#f0b870'] ]],
+  [19.0,  [ [0,'#080820'],[0.35,'#2a1428'],[0.65,'#4a1a20'],[1,'#7a3030'] ]],
+  [19.8,  [ [0,'#020208'],[0.5,'#06091a'],[1,'#0a1228'] ]],
+  [24.0,  [ [0,'#020208'],[0.5,'#06091a'],[1,'#0a1228'] ]],
+];
+const SKY_KEYS_OVC = [
+  [ 0.0,  [ [0,'#020208'],[0.5,'#06091a'],[1,'#0a1228'] ]],
+  [ 4.5,  [ [0,'#020208'],[0.5,'#06091a'],[1,'#0a1228'] ]],
+  [ 5.5,  [ [0,'#1a1525'],[0.35,'#5a3820'],[0.65,'#9a6040'],[1,'#c89a70'] ]],
+  [ 6.5,  [ [0,'#22203a'],[0.30,'#6a4030'],[0.60,'#b07050'],[1,'#d8aa80'] ]],
+  [ 8.0,  [ [0,'#8898aa'],[0.5,'#aabccc'],[1,'#c8d8e4'] ]],
+  [11.0,  [ [0,'#7a8c9e'],[0.5,'#a2b4c4'],[1,'#c0d0dc'] ]],
+  [15.0,  [ [0,'#7a8c9e'],[0.5,'#a2b4c4'],[1,'#c0d0dc'] ]],
+  [16.5,  [ [0,'#28243a'],[0.30,'#6a3828'],[0.58,'#a06040'],[1,'#cca070'] ]],
+  [18.0,  [ [0,'#18162e'],[0.28,'#502a1a'],[0.55,'#885030'],[1,'#c08058'] ]],
+  [19.0,  [ [0,'#060618'],[0.40,'#181018'],[1,'#241620'] ]],
+  [19.8,  [ [0,'#020208'],[0.5,'#06091a'],[1,'#0a1228'] ]],
+  [24.0,  [ [0,'#020208'],[0.5,'#06091a'],[1,'#0a1228'] ]],
+];
 
-// ── Stars (dark mode / night) ────────────────────────────────
+function hex2rgb(h) {
+  const x = parseInt(h.replace('#',''),16);
+  return [(x>>16)&255,(x>>8)&255,x&255];
+}
+function lerpStops(A, B, frac) {
+  const out = [], n = Math.min(A.length, B.length);
+  for (let i = 0; i < n; i++) {
+    const [pa,ca] = A[i], [pb,cb] = B[i];
+    const pos = pa+(pb-pa)*frac;
+    const ra = hex2rgb(ca), rb = hex2rgb(cb);
+    out.push([pos,`rgb(${Math.round(ra[0]+(rb[0]-ra[0])*frac)},${Math.round(ra[1]+(rb[1]-ra[1])*frac)},${Math.round(ra[2]+(rb[2]-ra[2])*frac)})`]);
+  }
+  return out;
+}
+function getSkyStops(hour, overcast) {
+  const keys = overcast ? SKY_KEYS_OVC : SKY_KEYS;
+  let i = 0;
+  while (i < keys.length-2 && keys[i+1][0] <= hour) i++;
+  const [h0,s0] = keys[i], [h1,s1] = keys[i+1];
+  const frac = Math.max(0, Math.min(1,(hour-h0)/(h1-h0)));
+  const ef = frac < 0.5 ? 2*frac*frac : -1+(4-2*frac)*frac;
+  return lerpStops(s0, s1, ef);
+}
+// Night alpha: 1 at night, fades to 0 by 7:12, fades back in after 18:48
+function nightAlpha(hour) {
+  if (hour < 5.2)  return 1;
+  if (hour < 7.2)  return 1-(hour-5.2)/2.0;
+  if (hour < 18.8) return 0;
+  if (hour < 19.8) return (hour-18.8)/1.0;
+  return 1;
+}
+// Cloud alpha: fades in after sunrise, fades out before sunset
+function cloudAlpha(hour) {
+  if (hour < 7.5)  return Math.max(0,(hour-7.0)/0.5);
+  if (hour < 16.0) return 1;
+  if (hour < 17.2) return 1-(hour-16.0)/1.2;
+  return 0;
+}
+// Warm horizon glow — sin curve, rises and falls naturally
+function glowAlpha(hour) {
+  if (hour >= 5.0 && hour < 8.5)   return Math.sin(Math.PI*(hour-5.0)/3.5)*0.45;
+  if (hour >= 15.8 && hour < 20.0) return Math.sin(Math.PI*(hour-15.8)/4.2)*0.40;
+  return 0;
+}
+
+// ── Main draw loop ────────────────────────────────────────────
+let _t = 0;
+function draw() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+  // Dark theme → always full night starfield, unchanged
+  if (isDark) {
+    CX.fillStyle = '#020205'; CX.fillRect(0,0,W,H);
+    drawNebulas(); drawMilkyWay(); drawStars(_t);
+    _t++; requestAnimationFrame(draw); return;
+  }
+
+  // Light theme → reference sky engine
+  const now  = new Date();
+  const hour = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
+
+  // Sky gradient from keyframes
+  const stops = getSkyStops(hour, false);
+  const grd = CX.createLinearGradient(0, 0, 0, H);
+  stops.forEach(([pos, col]) => grd.addColorStop(pos, col));
+  CX.fillStyle = grd; CX.fillRect(0, 0, W, H);
+
+  // Nebula ambient — fades with nightAlpha
+  const na = nightAlpha(hour);
+  const NB = [[0.12,0.22,0.38,22,42,145,0.045],[0.82,0.58,0.30,82,18,118,0.035],[0.50,0.88,0.44,18,78,125,0.030]];
+  for (const [fx,fy,fr,r,gg,b,a] of NB) {
+    const nbg = CX.createRadialGradient(fx*W,fy*H,0,fx*W,fy*H,fr*Math.max(W,H));
+    nbg.addColorStop(0, `rgba(${r},${gg},${b},${(a*na).toFixed(3)})`);
+    nbg.addColorStop(1, 'rgba(0,0,0,0)');
+    CX.fillStyle = nbg; CX.fillRect(0,0,W,H);
+  }
+
+  // Warm horizon glow (morning left, evening right) — sin curve
+  const ga = glowAlpha(hour);
+  if (ga > 0.01) {
+    const gx = hour < 12 ? W*0.28 : W*0.68;
+    const sg = CX.createRadialGradient(gx, H*0.82, 0, gx, H*0.82, W*0.52);
+    sg.addColorStop(0,   `rgba(255,195,70,${ga.toFixed(3)})`);
+    sg.addColorStop(0.4, `rgba(255,130,30,${(ga*0.38).toFixed(3)})`);
+    sg.addColorStop(1,   'rgba(255,90,10,0)');
+    CX.fillStyle = sg; CX.fillRect(0, 0, W, H);
+  }
+
+  // Clouds — fade in after sunrise, fade out before sunset
+  const ca = cloudAlpha(hour);
+  if (ca > 0.01) {
+    for (const cl of CLOUDS_BIG) {
+      cl.x = (cl.x + cl.sp) % 1.4;
+      drawCloud(CX, (cl.x-0.15)*W, cl.y*H, cl.s, cl.a*ca, 255, 255, 255);
+    }
+    for (const cl of CLOUDS_WISP) {
+      cl.x = (cl.x + cl.sp) % 1.35;
+      drawCloud(CX, (cl.x-0.1)*W, cl.y*H, cl.s, cl.a*ca*0.65, 255, 255, 255);
+    }
+  }
+  // Warm-tinted wispy clouds during transition (glow active)
+  if (ga > 0.05) {
+    for (const cl of CLOUDS_WISP) {
+      drawCloud(CX, (cl.x-0.1)*W, cl.y*H, cl.s*0.8, cl.a*ga*1.2, 255, 200, 140);
+    }
+  }
+
+  _t++; requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
 const STARS = Array.from({length:340}, () => ({
-  x: Math.random(), y: Math.random(),
-  r: Math.random() * 1.35 + 0.08,
-  a: Math.random() * 0.52 + 0.1,
-  tw: Math.random() * Math.PI * 2,
-  ts: 0.003 + Math.random() * 0.02,
+  x:   Math.random(),
+  y:   Math.random(),
+  r:   Math.random() * 1.5 + 0.3,
+  a:   Math.random() * 0.55 + 0.45,   // high brightness floor
+  tw:  Math.random() * Math.PI * 2,   // phase — every star out of sync
+  ts:  0.018 + Math.random() * 0.055, // primary blink speed (much faster)
+  ts2: 0.04  + Math.random() * 0.09,  // secondary flicker speed
 }));
-const FEATURE_STARS = Array.from({length:12}, () => ({
-  x: Math.random(), y: Math.random(),
-  r: 1.8 + Math.random() * 1.4,
-  a: 0.55 + Math.random() * 0.35,
-  tw: Math.random() * Math.PI * 2,
-  ts: 0.002 + Math.random() * 0.008,
+const FEATURE_STARS = Array.from({length:14}, () => ({
+  x:   Math.random(),
+  y:   Math.random(),
+  r:   2.2 + Math.random() * 1.6,
+  a:   0.7 + Math.random() * 0.3,
+  tw:  Math.random() * Math.PI * 2,
+  ts:  0.014 + Math.random() * 0.030, // slower blink for big stars — more dramatic
+  ts2: 0.03  + Math.random() * 0.06,
 }));
 
 // ── Clouds (light mode) ──────────────────────────────────────
@@ -790,145 +924,86 @@ function drawMilkyWay() {
   CX.fillStyle = g; CX.fillRect(0,0,W,H);
 }
 function drawStars(t) {
+  // ── Regular stars — dramatic blink + glow ──
   for (const s of STARS) {
-    const a = s.a * (0.62 + 0.38 * Math.sin(s.tw + t * s.ts));
-    CX.beginPath(); CX.arc(s.x*W, s.y*H, s.r, 0, 6.283);
-    CX.fillStyle = `rgba(218,225,255,${a.toFixed(2)})`; CX.fill();
+    // Two sine waves combined: one slow, one fast flicker → realistic blink
+    const blink = 0.5 + 0.5 * Math.sin(s.tw + t * s.ts)
+                + 0.18 * Math.sin(s.tw * 2.3 + t * s.ts2);
+    // clamp 0–1, then square it so stars go truly dark between blinks
+    const b = Math.max(0, Math.min(1, blink));
+    const pulse = b * b;                   // squared = spends more time dim, flashes bright
+    const alpha = s.a * pulse;
+    if (alpha < 0.01) continue;           // skip fully dark stars (perf)
+
+    CX.save();
+    // Outer halo glow — expands and contracts with the blink
+    CX.shadowColor = `rgba(160,200,255,${(pulse * 0.9).toFixed(2)})`;
+    CX.shadowBlur  = s.r * 14 * pulse + 2;
+    CX.beginPath();
+    CX.arc(s.x * W, s.y * H, s.r, 0, 6.283);
+    CX.fillStyle = `rgba(220,232,255,${alpha.toFixed(2)})`;
+    CX.fill();
+    // Inner bright core — flares white at peak brightness
+    if (pulse > 0.55) {
+      CX.shadowBlur  = s.r * 6;
+      CX.shadowColor = `rgba(255,255,255,${(pulse * 0.8).toFixed(2)})`;
+      CX.beginPath();
+      CX.arc(s.x * W, s.y * H, s.r * 0.45, 0, 6.283);
+      CX.fillStyle = `rgba(255,255,255,${(pulse * 0.9).toFixed(2)})`;
+      CX.fill();
+    }
+    CX.restore();
   }
+
+  // ── Feature stars — larger, cross-hair, strong pulsing glow ──
   for (const s of FEATURE_STARS) {
-    const a = s.a * (0.7 + 0.3 * Math.sin(s.tw + t * s.ts));
-    const sx = s.x*W, sy = s.y*H;
-    CX.strokeStyle = `rgba(255,255,255,${(a*0.35).toFixed(2)})`;
-    CX.lineWidth = 0.5;
-    CX.beginPath(); CX.moveTo(sx-s.r*4,sy); CX.lineTo(sx+s.r*4,sy); CX.stroke();
-    CX.beginPath(); CX.moveTo(sx,sy-s.r*4); CX.lineTo(sx,sy+s.r*4); CX.stroke();
-    CX.beginPath(); CX.arc(sx,sy,s.r,0,6.283);
-    CX.fillStyle = `rgba(255,252,240,${a.toFixed(2)})`; CX.fill();
-  }
-}
+    const blink = 0.5 + 0.5 * Math.sin(s.tw + t * s.ts)
+                + 0.15 * Math.sin(s.tw * 1.7 + t * s.ts2);
+    const b = Math.max(0, Math.min(1, blink));
+    const pulse = b * b;
+    const alpha = s.a * (0.3 + 0.7 * pulse);  // never fully dark for big stars
+    const sx = s.x * W, sy = s.y * H;
 
-// ── Sky gradient per phase ────────────────────────────────────
-function applySkyGradient(phase, isOvercast) {
-  let stops;
-  if (phase === 'morning') stops = [
-    [0,    '#1a2a50'], [0.18,'#7b3a20'],
-    [0.42, '#d4622a'], [0.68,'#f0a060'], [1,'#fcd8a0'],
-  ];
-  else if (phase === 'evening') stops = [
-    [0,    '#1e2d55'], [0.22,'#833520'],
-    [0.50, '#cc5e28'], [0.72,'#e89858'], [1,'#f8d09a'],
-  ];
-  else if (phase === 'night') stops = [
-    [0,'#020208'], [0.5,'#050a18'], [1,'#0a1228'],
-  ];
-  else if (isOvercast) stops = [
-    [0,'#b0c4d8'], [0.5,'#ccdae8'], [1,'#e4eef5'],
-  ];
-  else stops = [
-    [0,'#2e90d8'], [0.45,'#6dbcf2'], [1,'#aedcf8'],
-  ];
-  const g = CX.createLinearGradient(0,0,0,H);
-  stops.forEach(([p,c]) => g.addColorStop(p,c));
-  CX.fillStyle = g; CX.fillRect(0,0,W,H);
-}
+    CX.save();
+    // Outer diffuse halo
+    CX.shadowBlur  = s.r * 20 * pulse + 6;
+    CX.shadowColor = `rgba(200,230,255,${(pulse * 0.7).toFixed(2)})`;
 
-// ── Main draw loop ────────────────────────────────────────────
-let _t = 0;
-function draw() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    // Cross-hair spike lines — grow and fade with blink
+    CX.strokeStyle = `rgba(255,255,255,${(alpha * 0.55).toFixed(2)})`;
+    CX.lineWidth = 0.8;
+    const spikeLen = s.r * (4 + 3 * pulse);
+    CX.beginPath(); CX.moveTo(sx - spikeLen, sy); CX.lineTo(sx + spikeLen, sy); CX.stroke();
+    CX.beginPath(); CX.moveTo(sx, sy - spikeLen); CX.lineTo(sx, sy + spikeLen); CX.stroke();
 
-  // In dark theme → always use full night starfield
-  if (isDark) {
-    CX.fillStyle = '#020205'; CX.fillRect(0,0,W,H);
-    drawNebulas(); drawMilkyWay(); drawStars(_t);
-    _t++; requestAnimationFrame(draw); return;
-  }
-
-  // Light theme → dynamic sky
-  const phase = SKY.phase;
-  applySkyGradient(phase, SKY.isOvercast);
-
-  if (phase === 'night') {
-    drawNebulas(); drawMilkyWay(); drawStars(_t);
-    _t++; requestAnimationFrame(draw); return;
-  }
-
-  if (phase === 'morning' || phase === 'evening') {
-    // Horizon glow (no disc)
-    const gx = phase === 'morning' ? W*0.30 : W*0.68;
-    const sg = CX.createRadialGradient(gx,H*0.80,0,gx,H*0.80,W*0.55);
-    sg.addColorStop(0,   'rgba(255,200,80,0.40)');
-    sg.addColorStop(0.4, 'rgba(255,140,40,0.14)');
-    sg.addColorStop(1,   'rgba(255,100,20,0)');
-    CX.fillStyle = sg; CX.fillRect(0,0,W,H);
-    // Warm sparse clouds
-    for (const cl of CLOUDS_WISP) {
-      cl.x = (cl.x + cl.sp) % 1.35;
-      drawCloud(CX,(cl.x-0.1)*W, cl.y*H, cl.s, cl.a*0.72, 255,205,155);
+    // Diagonal soft spikes at peak only
+    if (pulse > 0.6) {
+      CX.strokeStyle = `rgba(255,255,255,${(pulse * 0.25).toFixed(2)})`;
+      const d = spikeLen * 0.55;
+      CX.beginPath(); CX.moveTo(sx - d, sy - d); CX.lineTo(sx + d, sy + d); CX.stroke();
+      CX.beginPath(); CX.moveTo(sx + d, sy - d); CX.lineTo(sx - d, sy + d); CX.stroke();
     }
-    _t++; requestAnimationFrame(draw); return;
-  }
 
-  // Daytime
-  if (!SKY.isOvercast) {
-    // Clear sky — soft diffuse glow, no disc
-    const sg = CX.createRadialGradient(W*0.72,H*0.14,0,W*0.72,H*0.14,W*0.38);
-    sg.addColorStop(0,   'rgba(255,248,210,0.28)');
-    sg.addColorStop(0.45,'rgba(200,235,255,0.10)');
-    sg.addColorStop(1,   'rgba(200,235,255,0)');
-    CX.fillStyle = sg; CX.fillRect(0,0,W,H);
-    for (const cl of CLOUDS_WISP) {
-      cl.x = (cl.x + cl.sp) % 1.35;
-      drawCloud(CX,(cl.x-0.1)*W, cl.y*H, cl.s, cl.a*0.62, 255,255,255);
+    // Star core — warm white glow
+    CX.shadowBlur  = s.r * 16 * pulse;
+    CX.shadowColor = `rgba(255,248,210,${(pulse * 0.95).toFixed(2)})`;
+    CX.beginPath();
+    CX.arc(sx, sy, s.r, 0, 6.283);
+    CX.fillStyle = `rgba(255,252,240,${alpha.toFixed(2)})`;
+    CX.fill();
+
+    // Bright white hot core at peak
+    if (pulse > 0.5) {
+      CX.shadowBlur  = s.r * 7;
+      CX.shadowColor = `rgba(255,255,255,${pulse.toFixed(2)})`;
+      CX.beginPath();
+      CX.arc(sx, sy, s.r * 0.4, 0, 6.283);
+      CX.fillStyle = `rgba(255,255,255,${pulse.toFixed(2)})`;
+      CX.fill();
     }
-  } else {
-    // Overcast — diffuse behind clouds
-    const sg = CX.createRadialGradient(W*0.55,H*0.18,0,W*0.55,H*0.18,W*0.44);
-    sg.addColorStop(0,  'rgba(240,246,255,0.26)');
-    sg.addColorStop(1,  'rgba(240,246,255,0)');
-    CX.fillStyle = sg; CX.fillRect(0,0,W,H);
-    for (const cl of CLOUDS_BIG) {
-      cl.x = (cl.x + cl.sp) % 1.42;
-      drawCloud(CX,(cl.x-0.15)*W, cl.y*H, cl.s, cl.a, 238,244,252);
-    }
-  }
-
-  _t++; requestAnimationFrame(draw);
-}
-requestAnimationFrame(draw);
-
-// ── Time phase (Tirupati District: sunrise ~6:00, sunset ~18:10) ────
-function getSkyPhase() {
-  const now = new Date();
-  const hm  = now.getHours() + now.getMinutes()/60;
-  const rise = 6.0, set = 18.25;
-  if (hm < rise)            return 'night';
-  if (hm < rise + 2.5)      return 'morning';
-  if (hm < set  - 2.5)      return 'day';
-  if (hm < set)             return 'evening';
-  return 'night';
-}
-function refreshPhase() { SKY.phase = getSkyPhase(); }
-refreshPhase();
-setInterval(refreshPhase, 60000);
-
-// ── Weather fetch (Open-Meteo, no key needed) ─────────────────
-async function fetchWeather(lat, lon) {
-  try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=cloudcover,weathercode&timezone=auto`;
-    const res  = await fetch(url);
-    const data = await res.json();
-    const cloud = data.current.cloudcover;
-    const wcode = data.current.weathercode;
-    SKY.isOvercast = cloud > 60 || (wcode >= 2 && wcode <= 99);
-  } catch(e) {
-    SKY.isOvercast = false;
+    CX.restore();
   }
 }
-fetchWeather(SKY.lat, SKY.lon);
-// Re-fetch every 15 minutes
-setInterval(() => fetchWeather(SKY.lat, SKY.lon), 15 * 60 * 1000);
-
 
 // ─── FEATURES TREE ────────────────────────────────────────────
 (function() {
